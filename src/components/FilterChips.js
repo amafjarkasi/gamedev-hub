@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { filterShape } from '../utils/propTypeShapes';
 import styles from './FilterChips.module.css';
 
 export default function FilterChips({ filters, onRemoveFilter, onClearAll }) {
@@ -61,3 +63,9 @@ export default function FilterChips({ filters, onRemoveFilter, onClearAll }) {
     </div>
   );
 }
+
+FilterChips.propTypes = {
+  filters: filterShape.isRequired,
+  onRemoveFilter: PropTypes.func.isRequired,
+  onClearAll: PropTypes.func.isRequired,
+};

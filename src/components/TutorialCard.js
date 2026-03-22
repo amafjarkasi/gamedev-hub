@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useTutorials } from '../hooks/useTutorials';
+import { useToast } from '../hooks/useToast';
 import { formatDuration, formatViewCount } from '../utils/formatUtils';
+import { tutorialShape } from '../utils/propTypeShapes';
 import DifficultyBadge from './DifficultyBadge';
 import StarDisplay from './StarDisplay';
 import styles from './TutorialCard.module.css';
@@ -11,6 +13,7 @@ export default function TutorialCard({ tutorial }) {
   const navigate = useNavigate();
   const { currentUser, isAuthenticated } = useAuth();
   const { toggleBookmark, isBookmarked } = useTutorials();
+  const { addToast } = useToast();
   const [imgError, setImgError] = useState(false);
 
   const bookmarked = isAuthenticated && isBookmarked(currentUser.id, tutorial.id);
@@ -26,6 +29,7 @@ export default function TutorialCard({ tutorial }) {
       return;
     }
     toggleBookmark(currentUser.id, tutorial.id);
+    addToast(bookmarked ? 'Bookmark removed' : 'Bookmark added', 'success');
   };
 
   return (
@@ -80,3 +84,7 @@ export default function TutorialCard({ tutorial }) {
     </div>
   );
 }
+
+TutorialCard.propTypes = {
+  tutorial: tutorialShape.isRequired,
+};

@@ -41,6 +41,7 @@ export default function CategoryPage() {
 
       <TutorialGallery
         tutorials={tutorials}
+        pageSize={12}
         emptyTitle="No tutorials yet"
         emptyMessage={`No tutorials found in ${category.label}. Be the first to submit one!`}
       />

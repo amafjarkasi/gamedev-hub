@@ -7,6 +7,7 @@ export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -15,7 +16,7 @@ export default function LoginPage() {
     return null;
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -24,11 +25,16 @@ export default function LoginPage() {
       return;
     }
 
-    const result = login({ username: username.trim(), password });
-    if (result.success) {
-      navigate('/');
-    } else {
-      setError(result.error);
+    setLoading(true);
+    try {
+      const result = await login({ username: username.trim(), password });
+      if (result.success) {
+        navigate('/');
+      } else {
+        setError(result.error);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,8 +67,8 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button type="submit" className={styles.submitBtn}>
-            Log In
+          <button type="submit" className={styles.submitBtn} disabled={loading}>
+            {loading ? 'Logging in...' : 'Log In'}
           </button>
         </form>
 

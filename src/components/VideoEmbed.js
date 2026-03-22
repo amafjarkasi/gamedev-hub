@@ -1,9 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { getEmbedUrl } from '../utils/videoUtils';
+import PropTypes from 'prop-types';
+import { getEmbedUrl, sanitizeUrl } from '../utils/videoUtils';
 import styles from './VideoEmbed.module.css';
 
 export default function VideoEmbed({ url, title }) {
   const embedUrl = getEmbedUrl(url);
+  const safeUrl = sanitizeUrl(url);
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
@@ -23,7 +25,7 @@ export default function VideoEmbed({ url, title }) {
           <span className={styles.fallbackIcon}>&#x1F3AC;</span>
           <p>Video preview unavailable</p>
           <a
-            href={url}
+            href={safeUrl}
             target="_blank"
             rel="noopener noreferrer"
             className={styles.fallbackLink}
@@ -45,7 +47,7 @@ export default function VideoEmbed({ url, title }) {
             This video may have been removed or is temporarily inaccessible.
           </p>
           <a
-            href={url}
+            href={safeUrl}
             target="_blank"
             rel="noopener noreferrer"
             className={styles.fallbackLink}
@@ -77,3 +79,8 @@ export default function VideoEmbed({ url, title }) {
     </div>
   );
 }
+
+VideoEmbed.propTypes = {
+  url: PropTypes.string.isRequired,
+  title: PropTypes.string,
+};

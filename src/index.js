@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { TutorialProvider } from './contexts/TutorialContext';
+import { ToastProvider } from './contexts/ToastContext';
 import App from './App';
 import './index.css';
 
@@ -12,7 +13,9 @@ root.render(
     <BrowserRouter>
       <AuthProvider>
         <TutorialProvider>
-          <App />
+          <ToastProvider>
+            <App />
+          </ToastProvider>
         </TutorialProvider>
       </AuthProvider>
     </BrowserRouter>

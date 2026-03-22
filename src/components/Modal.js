@@ -1,16 +1,56 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import styles from './Modal.module.css';
 
+const FOCUSABLE_SELECTOR =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 export default function Modal({ title, onClose, children }) {
+  const modalRef = useRef(null);
+  const closeBtnRef = useRef(null);
+  const previousFocusRef = useRef(null);
+  const titleId = useRef(
+    'modal-title-' + Math.random().toString(36).slice(2, 7)
+  ).current;
+
   useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === 'Escape') onClose();
+    previousFocusRef.current = document.activeElement;
+    closeBtnRef.current?.focus();
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+
+      if (e.key === 'Tab' && modalRef.current) {
+        const focusable = modalRef.current.querySelectorAll(FOCUSABLE_SELECTOR);
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
     };
-    document.addEventListener('keydown', handleEsc);
+
+    document.addEventListener('keydown', handleKeyDown);
     document.body.style.overflow = 'hidden';
+
     return () => {
-      document.removeEventListener('keydown', handleEsc);
+      document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
+      previousFocusRef.current?.focus();
     };
   }, [onClose]);
 
@@ -20,10 +60,21 @@ export default function Modal({ title, onClose, children }) {
 
   return (
     <div className={styles.overlay} onClick={handleOverlayClick}>
-      <div className={styles.modal} role="dialog" aria-modal="true">
+      <div
+        className={styles.modal}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        ref={modalRef}
+      >
         <div className={styles.header}>
-          <h2 className={styles.title}>{title}</h2>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
+          <h2 className={styles.title} id={titleId}>{title}</h2>
+          <button
+            className={styles.closeBtn}
+            onClick={onClose}
+            aria-label="Close"
+            ref={closeBtnRef}
+          >
             &times;
           </button>
         </div>
@@ -32,3 +83,9 @@ export default function Modal({ title, onClose, children }) {
     </div>
   );
 }
+
+Modal.propTypes = {
+  title: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
+};

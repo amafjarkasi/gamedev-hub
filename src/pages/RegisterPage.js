@@ -9,6 +9,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { register, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -17,7 +18,7 @@ export default function RegisterPage() {
     return null;
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -46,17 +47,22 @@ export default function RegisterPage() {
       return;
     }
 
-    const result = register({
-      username: username.trim(),
-      email: email.trim(),
-      password,
-      displayName: displayName.trim() || username.trim(),
-    });
+    setLoading(true);
+    try {
+      const result = await register({
+        username: username.trim(),
+        email: email.trim(),
+        password,
+        displayName: displayName.trim() || username.trim(),
+      });
 
-    if (result.success) {
-      navigate('/');
-    } else {
-      setError(result.error);
+      if (result.success) {
+        navigate('/');
+      } else {
+        setError(result.error);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -111,8 +117,8 @@ export default function RegisterPage() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button type="submit" className={styles.submitBtn}>
-            Create Account
+          <button type="submit" className={styles.submitBtn} disabled={loading}>
+            {loading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
 

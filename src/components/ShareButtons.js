@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { useToast } from '../hooks/useToast';
 import styles from './ShareButtons.module.css';
 
 export default function ShareButtons({ title, url }) {
-  const [copied, setCopied] = useState(false);
+  const { addToast } = useToast();
 
   const shareUrl = url || window.location.href;
   const encodedUrl = encodeURIComponent(shareUrl);
@@ -11,18 +13,15 @@ export default function ShareButtons({ title, url }) {
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(shareUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      addToast('Link copied to clipboard', 'info');
     } catch {
-      // Fallback
       const input = document.createElement('input');
       input.value = shareUrl;
       document.body.appendChild(input);
       input.select();
       document.execCommand('copy');
       document.body.removeChild(input);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      addToast('Link copied to clipboard', 'info');
     }
   };
 
@@ -30,10 +29,10 @@ export default function ShareButtons({ title, url }) {
     <div className={styles.shareButtons}>
       <span className={styles.shareLabel}>Share:</span>
       <button
-        className={`${styles.shareBtn} ${copied ? styles.copied : ''}`}
+        className={styles.shareBtn}
         onClick={handleCopyLink}
       >
-        {copied ? 'Copied!' : 'Copy Link'}
+        Copy Link
       </button>
       <a
         className={styles.shareBtn}
@@ -54,3 +53,8 @@ export default function ShareButtons({ title, url }) {
     </div>
   );
 }
+
+ShareButtons.propTypes = {
+  title: PropTypes.string.isRequired,
+  url: PropTypes.string,
+};

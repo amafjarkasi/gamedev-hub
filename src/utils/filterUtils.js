@@ -52,7 +52,7 @@ export function filterTutorials(tutorials, filters) {
   });
 }
 
-function getDurationBounds(rangeValue) {
+export function getDurationBounds(rangeValue) {
   const ranges = {
     short: { min: 0, max: 15 },
     medium: { min: 15, max: 60 },

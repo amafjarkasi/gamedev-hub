@@ -1,8 +1,64 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { CATEGORIES, DIFFICULTIES, PLATFORMS, DURATION_RANGES } from '../data/constants';
+import { useDebounce } from '../hooks/useDebounce';
+import { filterShape } from '../utils/propTypeShapes';
 import styles from './SearchFilter.module.css';
 
+const RECENT_SEARCHES_KEY = 'kaz_recent_searches';
+const MAX_RECENT = 8;
+
+function loadRecentSearches() {
+  try {
+    return JSON.parse(localStorage.getItem(RECENT_SEARCHES_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
 export default function SearchFilter({ filters, onFilterChange, onReset }) {
+  const [isFocused, setIsFocused] = useState(false);
+  const [recentSearches, setRecentSearches] = useState(loadRecentSearches);
+  const debouncedQuery = useDebounce(filters.searchQuery || '', 500);
+  const blurTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    if (debouncedQuery.trim().length >= 3) {
+      setRecentSearches((prev) => {
+        const filtered = prev.filter(
+          (s) => s.toLowerCase() !== debouncedQuery.trim().toLowerCase()
+        );
+        const next = [debouncedQuery.trim(), ...filtered].slice(0, MAX_RECENT);
+        localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(next));
+        return next;
+      });
+    }
+  }, [debouncedQuery]);
+
+  const clearHistory = () => {
+    setRecentSearches([]);
+    localStorage.removeItem(RECENT_SEARCHES_KEY);
+  };
+
+  const selectSuggestion = (query) => {
+    onFilterChange({ searchQuery: query });
+    setIsFocused(false);
+  };
+
+  const handleBlur = () => {
+    blurTimeoutRef.current = setTimeout(() => setIsFocused(false), 150);
+  };
+
+  const handleFocus = () => {
+    clearTimeout(blurTimeoutRef.current);
+    setIsFocused(true);
+  };
+
+  const currentQuery = (filters.searchQuery || '').toLowerCase();
+  const filteredSuggestions = recentSearches.filter(
+    (s) => !currentQuery || s.toLowerCase().includes(currentQuery)
+  );
+  const showSuggestions = isFocused && filteredSuggestions.length > 0;
   const handleSearchChange = (e) => {
     onFilterChange({ searchQuery: e.target.value });
   };
@@ -34,7 +90,31 @@ export default function SearchFilter({ filters, onFilterChange, onReset }) {
           placeholder="Search tutorials..."
           value={filters.searchQuery || ''}
           onChange={handleSearchChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
         />
+        {showSuggestions && (
+          <div className={styles.suggestionsDropdown}>
+            {filteredSuggestions.map((query) => (
+              <button
+                key={query}
+                className={styles.suggestionItem}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => selectSuggestion(query)}
+              >
+                <span className={styles.suggestionIcon}>&#128336;</span>
+                {query}
+              </button>
+            ))}
+            <button
+              className={styles.clearHistoryBtn}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={clearHistory}
+            >
+              Clear search history
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Category */}
@@ -131,3 +211,9 @@ export default function SearchFilter({ filters, onFilterChange, onReset }) {
     </div>
   );
 }
+
+SearchFilter.propTypes = {
+  filters: filterShape.isRequired,
+  onFilterChange: PropTypes.func.isRequired,
+  onReset: PropTypes.func.isRequired,
+};

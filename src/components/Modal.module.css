@@ -58,6 +58,11 @@
   color: var(--color-text-primary);
 }
 
+.closeBtn:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
 .body {
   padding: var(--space-lg);
 }

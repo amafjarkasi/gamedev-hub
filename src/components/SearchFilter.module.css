@@ -179,3 +179,60 @@
   color: var(--color-accent-danger);
   border-color: var(--color-accent-danger);
 }
+
+.suggestionsDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: var(--space-xs);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-elevated);
+  z-index: 50;
+  overflow: hidden;
+  max-height: 300px;
+}
+
+.suggestionItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  text-align: left;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.suggestionItem:hover {
+  background: var(--color-bg-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.suggestionIcon {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+.clearHistoryBtn {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  text-align: center;
+  border: none;
+  border-top: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.clearHistoryBtn:hover {
+  color: var(--color-accent-danger);
+}

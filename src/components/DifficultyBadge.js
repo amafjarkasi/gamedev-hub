@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styles from './DifficultyBadge.module.css';
 
 export default function DifficultyBadge({ difficulty }) {
@@ -14,3 +15,7 @@ export default function DifficultyBadge({ difficulty }) {
     </span>
   );
 }
+
+DifficultyBadge.propTypes = {
+  difficulty: PropTypes.oneOf(['Beginner', 'Intermediate', 'Advanced']).isRequired,
+};

@@ -1,0 +1,72 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: var(--space-2xl) var(--space-lg);
+  text-align: center;
+}
+
+.code {
+  font-family: var(--font-display);
+  font-size: 6rem;
+  font-weight: 800;
+  color: var(--color-text-muted);
+  line-height: 1;
+  margin-bottom: var(--space-base);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  margin-bottom: var(--space-md);
+}
+
+.message {
+  color: var(--color-text-secondary);
+  font-size: var(--text-base);
+  max-width: 400px;
+  margin-bottom: var(--space-xl);
+  line-height: 1.6;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-base);
+  align-items: center;
+}
+
+.homeBtn {
+  padding: var(--space-sm) var(--space-xl);
+  background: var(--color-accent-primary);
+  color: var(--color-text-inverse);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: filter var(--transition-fast);
+}
+
+.homeBtn:hover {
+  filter: brightness(1.1);
+  color: var(--color-text-inverse);
+}
+
+.browseLink {
+  padding: var(--space-sm) var(--space-xl);
+  background: var(--color-bg-surface);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.browseLink:hover {
+  border-color: var(--color-accent-primary);
+  color: var(--color-accent-primary);
+}

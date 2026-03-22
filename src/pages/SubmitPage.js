@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useTutorials } from '../hooks/useTutorials';
+import { useToast } from '../hooks/useToast';
 import { isValidVideoUrl, getThumbnailUrl, extractVideoId, checkVideoAvailability } from '../utils/videoUtils';
 import { CATEGORIES, DIFFICULTIES, PLATFORMS } from '../data/constants';
 import styles from './SubmitPage.module.css';
@@ -9,8 +10,8 @@ import styles from './SubmitPage.module.css';
 export default function SubmitPage() {
   const { currentUser, isAuthenticated } = useAuth();
   const { submitTutorial } = useTutorials();
+  const { addToast } = useToast();
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
   const [validating, setValidating] = useState(false);
   const [form, setForm] = useState({
     title: '',
@@ -37,7 +38,6 @@ export default function SubmitPage() {
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
     setError('');
-    setSuccess(false);
   };
 
   const handleSubmit = async (e) => {
@@ -121,7 +121,7 @@ export default function SubmitPage() {
       currentUser.id
     );
 
-    setSuccess(true);
+    addToast('Tutorial submitted successfully!', 'success');
     setForm({
       title: '',
       description: '',
@@ -140,12 +140,6 @@ export default function SubmitPage() {
       <p className={styles.subtitle}>
         Share a great game development tutorial with the community
       </p>
-
-      {success && (
-        <div className={styles.success}>
-          Tutorial submitted successfully! It's now live on the platform.
-        </div>
-      )}
 
       {error && <div className={styles.error}>{error}</div>}
 

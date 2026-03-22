@@ -177,6 +177,52 @@ export function TutorialProvider({ children }) {
     [submissions]
   );
 
+  const editSubmission = useCallback(
+    (submissionId, updatedData, userId) => {
+      const submission = submissions.find(
+        (s) => s.id === submissionId && s.submittedBy === userId
+      );
+      if (!submission) {
+        return { success: false, error: 'Not authorized' };
+      }
+      setSubmissions((prev) =>
+        prev.map((s) =>
+          s.id === submissionId
+            ? {
+                ...s,
+                ...updatedData,
+                id: s.id,
+                submittedBy: s.submittedBy,
+                status: s.status,
+                createdAt: s.createdAt,
+                viewCount: s.viewCount,
+                averageRating: s.averageRating,
+                ratingCount: s.ratingCount,
+                isFeatured: s.isFeatured,
+                updatedAt: new Date().toISOString(),
+              }
+            : s
+        )
+      );
+      return { success: true };
+    },
+    [submissions, setSubmissions]
+  );
+
+  const deleteSubmission = useCallback(
+    (submissionId, userId) => {
+      const submission = submissions.find(
+        (s) => s.id === submissionId && s.submittedBy === userId
+      );
+      if (!submission) {
+        return { success: false, error: 'Not authorized' };
+      }
+      setSubmissions((prev) => prev.filter((s) => s.id !== submissionId));
+      return { success: true };
+    },
+    [submissions, setSubmissions]
+  );
+
   const incrementViewCount = useCallback(
     (tutorialId) => {
       setViewLog((prev) => ({
@@ -223,6 +269,8 @@ export function TutorialProvider({ children }) {
       getUserBookmarks,
       submitTutorial,
       getUserSubmissions,
+      editSubmission,
+      deleteSubmission,
       incrementViewCount,
       updateFilters,
       resetFilters,
@@ -246,6 +294,8 @@ export function TutorialProvider({ children }) {
       getUserBookmarks,
       submitTutorial,
       getUserSubmissions,
+      editSubmission,
+      deleteSubmission,
       incrementViewCount,
       updateFilters,
       resetFilters,

@@ -87,4 +87,205 @@
   .tabs {
     overflow-x: auto;
   }
+
+  .fieldRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+.submissionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-lg);
+}
+
+.submissionCard {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.submissionTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.submissionDesc {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.submissionMeta {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.submissionActions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: auto;
+  padding-top: var(--space-sm);
+}
+
+.editBtn {
+  flex: 1;
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  background: var(--color-accent-primary-dim);
+  color: var(--color-accent-primary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.editBtn:hover {
+  border-color: var(--color-accent-primary);
+}
+
+.deleteBtn {
+  flex: 1;
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  background: rgba(255, 71, 87, 0.1);
+  color: var(--color-accent-danger);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.deleteBtn:hover {
+  border-color: var(--color-accent-danger);
+}
+
+.confirmText {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.modalActions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: flex-end;
+  margin-top: var(--space-lg);
+}
+
+.cancelBtn {
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.cancelBtn:hover {
+  color: var(--color-text-primary);
+}
+
+.confirmDeleteBtn {
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-md);
+  background: var(--color-accent-danger);
+  color: white;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: filter var(--transition-fast);
+}
+
+.confirmDeleteBtn:hover {
+  filter: brightness(1.1);
+}
+
+.saveBtn {
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-md);
+  background: var(--color-accent-primary);
+  color: var(--color-text-inverse);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: filter var(--transition-fast);
+}
+
+.saveBtn:hover {
+  filter: brightness(1.1);
+}
+
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.editError {
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  color: var(--color-accent-danger);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.fieldLabel {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.fieldInput,
+.fieldTextarea,
+.fieldSelect {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  transition: border-color var(--transition-fast);
+}
+
+.fieldInput:focus,
+.fieldTextarea:focus,
+.fieldSelect:focus {
+  border-color: var(--color-accent-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-accent-primary-dim);
+}
+
+.fieldTextarea {
+  min-height: 80px;
+  resize: vertical;
+  font-family: var(--font-primary);
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
 }

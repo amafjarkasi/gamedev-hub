@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styles from './StarDisplay.module.css';
 
 export default function StarDisplay({ rating, count, compact = false }) {
@@ -39,3 +40,9 @@ export default function StarDisplay({ rating, count, compact = false }) {
     </div>
   );
 }
+
+StarDisplay.propTypes = {
+  rating: PropTypes.number.isRequired,
+  count: PropTypes.number,
+  compact: PropTypes.bool,
+};

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { SORT_OPTIONS } from '../data/constants';
 import styles from './SortDropdown.module.css';
 
@@ -20,3 +21,8 @@ export default function SortDropdown({ value, onChange }) {
     </div>
   );
 }
+
+SortDropdown.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+};

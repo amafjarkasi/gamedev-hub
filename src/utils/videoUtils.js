@@ -47,6 +47,18 @@ export function getVideoPlatformName(url) {
   return result ? result.platform : 'Unknown';
 }
 
+export function sanitizeUrl(url) {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      return url;
+    }
+    return '#';
+  } catch {
+    return '#';
+  }
+}
+
 /**
  * Check if a YouTube or Vimeo video is actually accessible.
  * Uses the oEmbed endpoint which returns 200 for valid videos, 404 for invalid.

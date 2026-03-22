@@ -1,9 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useTutorials } from '../hooks/useTutorials';
+import { useToast } from '../hooks/useToast';
 import { formatDuration, formatViewCount, formatDate } from '../utils/formatUtils';
+import { sanitizeUrl } from '../utils/videoUtils';
 import VideoEmbed from '../components/VideoEmbed';
+import TutorialGallery from '../components/TutorialGallery';
 import DifficultyBadge from '../components/DifficultyBadge';
 import StarDisplay from '../components/StarDisplay';
 import RatingWidget from '../components/RatingWidget';
@@ -17,6 +20,7 @@ export default function TutorialDetailPage() {
   const { currentUser, isAuthenticated } = useAuth();
   const {
     getTutorialById,
+    allTutorials,
     incrementViewCount,
     addRating,
     getUserRating,
@@ -25,8 +29,17 @@ export default function TutorialDetailPage() {
     toggleBookmark,
     isBookmarked,
   } = useTutorials();
+  const { addToast } = useToast();
 
   const tutorial = getTutorialById(id);
+
+  const relatedTutorials = useMemo(() => {
+    if (!tutorial) return [];
+    return allTutorials
+      .filter((t) => t.category === tutorial.category && t.id !== tutorial.id)
+      .sort((a, b) => b.averageRating - a.averageRating)
+      .slice(0, 4);
+  }, [allTutorials, tutorial]);
 
   useEffect(() => {
     if (tutorial) {
@@ -58,12 +71,14 @@ export default function TutorialDetailPage() {
   const handleRate = (rating) => {
     if (isAuthenticated) {
       addRating(tutorial.id, currentUser.id, rating);
+      addToast('Rating saved', 'success');
     }
   };
 
   const handleReview = (text) => {
     if (isAuthenticated) {
       addReview(tutorial.id, currentUser.id, currentUser.displayName, text);
+      addToast('Review posted', 'success');
     }
   };
 
@@ -73,6 +88,7 @@ export default function TutorialDetailPage() {
       return;
     }
     toggleBookmark(currentUser.id, tutorial.id);
+    addToast(bookmarked ? 'Bookmark removed' : 'Bookmark added', 'success');
   };
 
   return (
@@ -131,7 +147,7 @@ export default function TutorialDetailPage() {
             {bookmarked ? '\u2605 Bookmarked' : '\u2606 Bookmark'}
           </button>
           <a
-            href={tutorial.url}
+            href={sanitizeUrl(tutorial.url)}
             target="_blank"
             rel="noopener noreferrer"
             className={styles.watchBtn}
@@ -158,6 +174,15 @@ export default function TutorialDetailPage() {
             onSubmitReview={handleReview}
           />
         </div>
+
+        {relatedTutorials.length > 0 && (
+          <div className={styles.relatedSection}>
+            <TutorialGallery
+              tutorials={relatedTutorials}
+              title="Related Tutorials"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
