@@ -1,0 +1,35 @@
+.stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.star {
+  color: var(--color-border-light);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.starFilled {
+  color: var(--color-accent-star);
+}
+
+.starHalf {
+  position: relative;
+  display: inline-block;
+}
+
+.ratingText {
+  margin-left: var(--space-xs);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.compact .star {
+  font-size: 12px;
+}
+
+.compact .ratingText {
+  font-size: 11px;
+}

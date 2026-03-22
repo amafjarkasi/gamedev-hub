@@ -1,0 +1,27 @@
+.sortWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.sortLabel {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.sortSelect {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  min-width: 160px;
+}
+
+.sortSelect:focus {
+  border-color: var(--color-accent-primary);
+  outline: none;
+}

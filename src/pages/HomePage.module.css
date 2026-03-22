@@ -1,0 +1,185 @@
+.hero {
+  background: linear-gradient(135deg, var(--color-bg-secondary) 0%, #1a1035 50%, var(--color-bg-secondary) 100%);
+  padding: var(--space-3xl) var(--space-lg);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 50%, rgba(0, 212, 255, 0.06) 0%, transparent 50%),
+              radial-gradient(circle at 70% 50%, rgba(123, 47, 247, 0.06) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.heroContent {
+  position: relative;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: var(--space-base);
+}
+
+.heroAccent {
+  background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heroSubtitle {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xl);
+  line-height: 1.6;
+}
+
+.heroActions {
+  display: flex;
+  gap: var(--space-base);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: var(--color-accent-primary);
+  color: var(--color-text-inverse);
+  padding: var(--space-md) var(--space-xl);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: var(--text-base);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.btnPrimary:hover {
+  filter: brightness(1.1);
+  box-shadow: var(--shadow-glow);
+  color: var(--color-text-inverse);
+}
+
+.btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  padding: var(--space-md) var(--space-xl);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: var(--text-base);
+  border: 1px solid var(--color-border-light);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.btnSecondary:hover {
+  border-color: var(--color-accent-primary);
+  color: var(--color-accent-primary);
+}
+
+.section {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--space-lg);
+}
+
+.categoriesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--space-base);
+  margin-top: var(--space-lg);
+}
+
+.categoryCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
+  text-decoration: none;
+  color: var(--color-text-primary);
+}
+
+.categoryCard:hover {
+  border-color: var(--color-accent-primary);
+  background: var(--color-bg-surface-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+.categoryCardIcon {
+  font-size: 2rem;
+}
+
+.categoryCardLabel {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-align: center;
+}
+
+.categoryCardCount {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: var(--text-3xl);
+  }
+
+  .heroSubtitle {
+    font-size: var(--text-base);
+  }
+
+  .categoriesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .heroTitle {
+    font-size: var(--text-2xl);
+  }
+
+  .heroActions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .categoriesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

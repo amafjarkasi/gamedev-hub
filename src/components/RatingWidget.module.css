@@ -1,0 +1,41 @@
+.ratingWidget {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  background: transparent;
+  color: var(--color-border-light);
+  font-size: 24px;
+  padding: 0;
+  transition: color var(--transition-fast);
+  line-height: 1;
+}
+
+.star:hover {
+  color: var(--color-accent-star);
+}
+
+.starFilled {
+  color: var(--color-accent-star);
+}
+
+.ratingLabel {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.loginPrompt {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.loginPrompt a {
+  color: var(--color-accent-primary);
+}

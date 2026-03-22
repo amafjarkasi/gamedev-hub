@@ -1,0 +1,47 @@
+.page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.header {
+  margin-bottom: var(--space-xl);
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-base);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.backLink:hover {
+  color: var(--color-accent-primary);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.icon {
+  font-size: 2rem;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+}
+
+.subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  margin-top: var(--space-xs);
+  margin-left: calc(2rem + var(--space-md));
+}

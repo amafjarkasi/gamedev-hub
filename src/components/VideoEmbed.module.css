@@ -1,0 +1,50 @@
+.embedWrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.fallback {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  color: var(--color-text-secondary);
+}
+
+.fallbackIcon {
+  font-size: 3rem;
+}
+
+.fallbackLink {
+  background: var(--color-accent-primary);
+  color: var(--color-text-inverse);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  text-decoration: none;
+  transition: filter var(--transition-fast);
+}
+
+.fallbackLink:hover {
+  filter: brightness(1.1);
+  color: var(--color-text-inverse);
+}
