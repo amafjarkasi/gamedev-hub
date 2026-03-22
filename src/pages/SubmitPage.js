@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useTutorials } from '../hooks/useTutorials';
-import { isValidVideoUrl, getThumbnailUrl, extractVideoId } from '../utils/videoUtils';
+import { isValidVideoUrl, getThumbnailUrl, extractVideoId, checkVideoAvailability } from '../utils/videoUtils';
 import { CATEGORIES, DIFFICULTIES, PLATFORMS } from '../data/constants';
 import styles from './SubmitPage.module.css';
 
@@ -11,6 +11,7 @@ export default function SubmitPage() {
   const { submitTutorial } = useTutorials();
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [validating, setValidating] = useState(false);
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -39,7 +40,7 @@ export default function SubmitPage() {
     setSuccess(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -72,6 +73,23 @@ export default function SubmitPage() {
       setError('Duration must be between 1 and 600 minutes');
       return;
     }
+
+    // Validate video availability before submitting
+    setValidating(true);
+    try {
+      const availability = await checkVideoAvailability(form.url.trim());
+      if (!availability.available) {
+        setError(
+          availability.error ||
+            'The video at this URL is unavailable. Please check the link and try again.'
+        );
+        setValidating(false);
+        return;
+      }
+    } catch {
+      // If validation itself fails due to network, allow submission
+    }
+    setValidating(false);
 
     const tags = form.tags
       .split(',')
@@ -157,7 +175,9 @@ export default function SubmitPage() {
             value={form.url}
             onChange={handleChange('url')}
           />
-          <span className={styles.hint}>YouTube or Vimeo links supported</span>
+          <span className={styles.hint}>
+            YouTube or Vimeo links supported. Video availability will be verified on submit.
+          </span>
         </div>
 
         <div className={styles.field}>
@@ -258,8 +278,8 @@ export default function SubmitPage() {
           <span className={styles.hint}>Comma-separated, max 5 tags</span>
         </div>
 
-        <button type="submit" className={styles.submitBtn}>
-          Submit Tutorial
+        <button type="submit" className={styles.submitBtn} disabled={validating}>
+          {validating ? 'Verifying video...' : 'Submit Tutorial'}
         </button>
       </form>
     </div>

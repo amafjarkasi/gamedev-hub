@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { getEmbedUrl } from '../utils/videoUtils';
 import styles from './VideoEmbed.module.css';
 
 export default function VideoEmbed({ url, title }) {
   const embedUrl = getEmbedUrl(url);
+  const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  const handleLoad = useCallback(() => {
+    setLoading(false);
+  }, []);
+
+  const handleError = useCallback(() => {
+    setLoading(false);
+    setHasError(true);
+  }, []);
 
   if (!embedUrl) {
     return (
@@ -24,14 +35,44 @@ export default function VideoEmbed({ url, title }) {
     );
   }
 
+  if (hasError) {
+    return (
+      <div className={styles.embedWrapper}>
+        <div className={styles.fallback}>
+          <span className={styles.fallbackIcon}>&#x26A0;</span>
+          <p className={styles.errorTitle}>Video Unavailable</p>
+          <p className={styles.errorHint}>
+            This video may have been removed or is temporarily inaccessible.
+          </p>
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.fallbackLink}
+          >
+            Try on {url.includes('vimeo') ? 'Vimeo' : 'YouTube'}
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.embedWrapper}>
+      {loading && (
+        <div className={styles.loader}>
+          <div className={styles.spinner} />
+          <p>Loading video...</p>
+        </div>
+      )}
       <iframe
         className={styles.iframe}
         src={embedUrl}
         title={title}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
+        onLoad={handleLoad}
+        onError={handleError}
       />
     </div>
   );
