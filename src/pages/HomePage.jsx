@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTutorials } from '../hooks/useTutorials';
 import { useAuth } from '../hooks/useAuth';

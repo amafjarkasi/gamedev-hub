@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './EmptyState.module.css';
 
 export default function EmptyState({ icon = '🔍', title, message, actionLabel, onAction }) {

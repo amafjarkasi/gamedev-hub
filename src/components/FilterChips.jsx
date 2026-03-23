@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { filterShape } from '../utils/propTypeShapes';
 import styles from './FilterChips.module.css';
