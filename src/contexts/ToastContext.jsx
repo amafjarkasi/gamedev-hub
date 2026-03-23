@@ -26,7 +26,7 @@ export function ToastProvider({ children }) {
 
   const addToast = useCallback(
     (message, variant = 'info') => {
-      const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      const id = crypto.randomUUID();
       setToasts((prev) => {
         const next = [...prev, { id, message, variant, dismissing: false }];
         return next.length > 5 ? next.slice(next.length - 5) : next;
