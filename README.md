@@ -17,18 +17,23 @@ A modern, feature-rich web application for discovering, sharing, and organizing 
 - **Community Freshness Flags** — Users can vote if a tutorial "Still Works" or is "Outdated", providing a consensus badge.
 - **Personalized "For You" Feed** — Follow specific tags to get a curated list of tutorials on the home page.
 - **Prerequisite Links** — "Watch These First" links guide users through learning paths.
-- **Tutorial Gallery** — Responsive card grid with YouTube thumbnails, metadata, difficulty badges, and platform tags
-- **Advanced Search & Filtering** — Filter by category, difficulty, platform, duration, and rating with active filter chips and sort options
-- **URL-Synced Filters** — Search filters persist in the URL query string and localStorage, enabling shareable filtered views
-- **Tutorial Detail View** — Embedded video player, star ratings, user reviews, share buttons, and bookmarking
-- **Related Tutorials** — Each tutorial detail page shows up to 4 related tutorials from the same category, ranked by rating
-- **Tutorial Submission** — Authenticated users can submit YouTube/Vimeo tutorial links with full categorization
-- **User Accounts** — Register, login, and manage a profile with bookmarks and submission history
-- **Category Browsing** — Dedicated pages for 2D, 3D, Programming, Art, Audio, and Game Design
-- **25 Mock Tutorials** — Realistic demo data spanning all categories, platforms, and difficulty levels
-- **Dark Theme** — Gaming-inspired design with electric blue and purple accents
-- **Fully Responsive** — Mobile hamburger menu, collapsible sidebar, adaptive 1-4 column grid
-- **404 Page** — Custom not-found page with navigation links for unmatched routes
+- **Tutorial Management** — Authors can seamlessly edit or delete their submitted tutorials directly from their profile.
+- **Tutorial Gallery & Pagination** — Responsive card grid with multi-page navigation for browsing large collections.
+- **Advanced Search & Suggestions** — Filter by category, difficulty, platform, duration, and rating, featuring active filter chips and recent search query suggestions.
+- **URL-Synced Filters** — Search filters persist in the URL query string and localStorage, enabling shareable filtered views.
+- **Tutorial Detail View** — Embedded video player with fallback UI for broken links, star ratings, user reviews, share buttons, and bookmarking.
+- **Related Tutorials** — Each tutorial detail page shows up to 4 related tutorials from the same category, ranked by rating.
+- **Tutorial Submission & Validation** — Authenticated users can submit YouTube/Vimeo tutorial links, featuring async video availability validation prior to submission.
+- **User Accounts** — Register, login, and manage a profile with bookmarks and submission history.
+- **Category Browsing** — Dedicated pages for 2D, 3D, Programming, Art, Audio, and Game Design.
+- **25 Mock Tutorials** — Realistic demo data spanning all categories, platforms, and difficulty levels.
+- **Dark Theme** — Gaming-inspired design with electric blue and purple accents.
+- **Fully Responsive** — Mobile hamburger menu, collapsible sidebar, adaptive 1-4 column grid.
+- **404 Page** — Custom not-found page with navigation links for unmatched routes.
+
+### User Experience & Performance
+- **Route-Level Code Splitting** — Faster initial page loads using React `lazy()` and `Suspense` with custom loading spinners.
+- **Toast Notifications** — Global, auto-dismissing slide-in notifications for providing user feedback (success, error, info) on actions like bookmarking or submitting.
 
 ### Security
 - **Password Hashing** — User passwords are hashed using Web Crypto API PBKDF2 (100,000 iterations, SHA-256) with per-user salts, replacing the previous base64 encoding. Legacy hashes are transparently migrated on login.
