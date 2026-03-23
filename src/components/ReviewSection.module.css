@@ -76,6 +76,55 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: var(--space-base);
+  display: flex;
+  gap: var(--space-md);
+  align-items: flex-start;
+}
+
+.voteControls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.voteBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  padding: var(--space-xs);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.voteBtn:not(:disabled):hover {
+  background: var(--color-bg-input);
+  color: var(--color-text-primary);
+}
+
+.voteBtn:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.votedUp {
+  color: var(--color-accent-success, #2ecc71);
+}
+
+.votedDown {
+  color: var(--color-accent-danger, #ff4757);
+}
+
+.voteCount {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.reviewContent {
+  flex: 1;
 }
 
 .reviewHeader {

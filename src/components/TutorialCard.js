@@ -12,11 +12,12 @@ import styles from './TutorialCard.module.css';
 export default function TutorialCard({ tutorial }) {
   const navigate = useNavigate();
   const { currentUser, isAuthenticated } = useAuth();
-  const { toggleBookmark, isBookmarked } = useTutorials();
+  const { toggleBookmark, isBookmarked, isCompleted } = useTutorials();
   const { addToast } = useToast();
   const [imgError, setImgError] = useState(false);
 
   const bookmarked = isAuthenticated && isBookmarked(currentUser.id, tutorial.id);
+  const completed = isAuthenticated && isCompleted(currentUser.id, tutorial.id);
 
   const handleClick = () => {
     navigate(`/tutorial/${tutorial.id}`);
@@ -33,7 +34,7 @@ export default function TutorialCard({ tutorial }) {
   };
 
   return (
-    <div className={styles.card} onClick={handleClick} role="button" tabIndex={0}>
+    <div className={`${styles.card} ${completed ? styles.cardCompleted : ''}`} onClick={handleClick} role="button" tabIndex={0}>
       <div className={styles.thumbnailWrapper}>
         {!imgError ? (
           <img
@@ -48,6 +49,7 @@ export default function TutorialCard({ tutorial }) {
         )}
         <span className={styles.duration}>{formatDuration(tutorial.estimatedDuration)}</span>
         <span className={styles.platformBadge}>{tutorial.platform}</span>
+        {completed && <span className={styles.completedBadge}>&#10003; Completed</span>}
         <button
           className={`${styles.bookmarkBtn} ${bookmarked ? styles.bookmarked : ''}`}
           onClick={handleBookmark}

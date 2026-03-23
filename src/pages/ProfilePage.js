@@ -13,7 +13,7 @@ import styles from './ProfilePage.module.css';
 
 export default function ProfilePage() {
   const { currentUser, isAuthenticated } = useAuth();
-  const { getUserBookmarks, getUserSubmissions, editSubmission, deleteSubmission } = useTutorials();
+  const { getUserBookmarks, getUserSubmissions, editSubmission, deleteSubmission, getUserCompletedTutorials } = useTutorials();
   const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState('bookmarks');
   const [deletingTutorial, setDeletingTutorial] = useState(null);
@@ -51,6 +51,7 @@ export default function ProfilePage() {
 
   const bookmarks = getUserBookmarks(currentUser.id);
   const submissions = getUserSubmissions(currentUser.id);
+  const completedTutorials = getUserCompletedTutorials(currentUser.id);
 
   const handleDelete = () => {
     if (!deletingTutorial) return;
@@ -150,6 +151,12 @@ export default function ProfilePage() {
           Bookmarks ({bookmarks.length})
         </button>
         <button
+          className={`${styles.tab} ${activeTab === 'completed' ? styles.tabActive : ''}`}
+          onClick={() => setActiveTab('completed')}
+        >
+          Completed ({completedTutorials.length})
+        </button>
+        <button
           className={`${styles.tab} ${activeTab === 'submissions' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('submissions')}
         >
@@ -163,6 +170,15 @@ export default function ProfilePage() {
           pageSize={12}
           emptyTitle="No bookmarks yet"
           emptyMessage="Browse tutorials and bookmark your favorites to find them here."
+        />
+      )}
+
+      {activeTab === 'completed' && (
+        <TutorialGallery
+          tutorials={completedTutorials}
+          pageSize={12}
+          emptyTitle="No completed tutorials"
+          emptyMessage="Mark tutorials as completed when you finish them to track your progress."
         />
       )}
 

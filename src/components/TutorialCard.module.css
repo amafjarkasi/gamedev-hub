@@ -77,6 +77,25 @@
   backdrop-filter: blur(4px);
 }
 
+.completedBadge {
+  position: absolute;
+  top: var(--space-sm);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-accent-success, rgba(46, 204, 113, 0.85));
+  color: white;
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+  z-index: 2;
+}
+
+.cardCompleted .thumbnail {
+  opacity: 0.6;
+}
+
 .bookmarkBtn {
   position: absolute;
   top: var(--space-sm);

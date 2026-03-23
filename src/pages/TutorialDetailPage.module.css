@@ -107,6 +107,31 @@
   border-bottom: 1px solid var(--color-border);
 }
 
+.completedBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-base);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.completedBtn:hover {
+  border-color: var(--color-accent-success, #2ecc71);
+  color: var(--color-accent-success, #2ecc71);
+}
+
+.completedActive {
+  background: var(--color-accent-success-dim, rgba(46, 204, 113, 0.15));
+  border-color: var(--color-accent-success, #2ecc71);
+  color: var(--color-accent-success, #2ecc71);
+}
+
 .bookmarkBtn {
   display: flex;
   align-items: center;

@@ -28,6 +28,8 @@ export default function TutorialDetailPage() {
     getReviewsForTutorial,
     toggleBookmark,
     isBookmarked,
+    toggleCompleted,
+    isCompleted,
   } = useTutorials();
   const { addToast } = useToast();
 
@@ -67,6 +69,7 @@ export default function TutorialDetailPage() {
   const userRating = isAuthenticated ? getUserRating(tutorial.id, currentUser.id) : 0;
   const reviews = getReviewsForTutorial(tutorial.id);
   const bookmarked = isAuthenticated && isBookmarked(currentUser.id, tutorial.id);
+  const completed = isAuthenticated && isCompleted(currentUser.id, tutorial.id);
 
   const handleRate = (rating) => {
     if (isAuthenticated) {
@@ -89,6 +92,15 @@ export default function TutorialDetailPage() {
     }
     toggleBookmark(currentUser.id, tutorial.id);
     addToast(bookmarked ? 'Bookmark removed' : 'Bookmark added', 'success');
+  };
+
+  const handleCompleted = () => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    toggleCompleted(currentUser.id, tutorial.id);
+    addToast(completed ? 'Marked as uncompleted' : 'Marked as completed', 'success');
   };
 
   return (
@@ -140,6 +152,12 @@ export default function TutorialDetailPage() {
         </div>
 
         <div className={styles.actionsRow}>
+          <button
+            className={`${styles.completedBtn} ${completed ? styles.completedActive : ''}`}
+            onClick={handleCompleted}
+          >
+            {completed ? '&#10003; Completed' : 'Mark as Completed'}
+          </button>
           <button
             className={`${styles.bookmarkBtn} ${bookmarked ? styles.bookmarked : ''}`}
             onClick={handleBookmark}

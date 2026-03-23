@@ -22,6 +22,11 @@ export function TutorialProvider({ children }) {
   const [viewLog, setViewLog] = useLocalStorage('kaz_view_log', {});
   const [filters, setFilters] = useLocalStorage('kaz_filters', DEFAULT_FILTERS);
   const [sortBy, setSortBy] = useLocalStorage('kaz_sort', 'newest');
+  
+  // Feature 1
+  const [completed, setCompleted] = useLocalStorage('kaz_completed', {});
+  // Feature 2
+  const [reviewVotes, setReviewVotes] = useLocalStorage('kaz_review_votes', {});
 
   // Merge mock tutorials with approved submissions, overlay dynamic data
   const allTutorials = useMemo(() => {
@@ -151,6 +156,103 @@ export function TutorialProvider({ children }) {
     [bookmarks, allTutorials]
   );
 
+  // --- Feature 1 (Completed) functions ---
+  const toggleCompleted = useCallback(
+    (userId, tutorialId) => {
+      setCompleted((prev) => {
+        const userCompleted = prev[userId] || [];
+        const isCurrentlyCompleted = userCompleted.includes(tutorialId);
+        return {
+          ...prev,
+          [userId]: isCurrentlyCompleted
+            ? userCompleted.filter((id) => id !== tutorialId)
+            : [...userCompleted, tutorialId],
+        };
+      });
+    },
+    [setCompleted]
+  );
+
+  const isCompleted = useCallback(
+    (userId, tutorialId) => {
+      return (completed[userId] || []).includes(tutorialId);
+    },
+    [completed]
+  );
+
+  const getUserCompletedTutorials = useCallback(
+    (userId) => {
+      const ids = completed[userId] || [];
+      return allTutorials.filter((t) => ids.includes(t.id));
+    },
+    [completed, allTutorials]
+  );
+
+  const getUserCompletedCount = useCallback(
+    (userId) => {
+      return (completed[userId] || []).length;
+    },
+    [completed]
+  );
+
+  // --- Feature 2 (Review Voting) functions ---
+  const voteOnReview = useCallback(
+    (reviewId, userId, voteType) => {
+      setReviewVotes((prev) => {
+        const reviewVotesForId = prev[reviewId] || {};
+        const userVote = reviewVotesForId[userId];
+        if (voteType === userVote) {
+          // Toggle off
+          return {
+            ...prev,
+            [reviewId]: {
+              ...(prev[reviewId] || {}),
+              [userId]: undefined,
+            },
+          };
+        }
+        return {
+          ...prev,
+          [reviewId]: {
+            ...(prev[reviewId] || {}),
+            [userId]: voteType,
+          },
+        };
+      });
+    },
+    [setReviewVotes]
+  );
+
+  const getReviewVotes = useCallback(
+    (reviewId) => {
+      return reviewVotes[reviewId] || {};
+    },
+    [reviewVotes]
+  );
+
+  const getUserReviewVote = useCallback(
+    (reviewId, userId) => {
+      return reviewVotes[reviewId]?.[userId];
+    },
+    [reviewVotes]
+  );
+
+  const getReviewNetVotes = useCallback(
+    (reviewId) => {
+      const votes = reviewVotes[reviewId] || {};
+      let upvotes = 0;
+      let downvotes = 0;
+      Object.values(votes).forEach((vote) => {
+        if (vote === 'up') upvotes++;
+        if (vote === 'down') downvotes++;
+      });
+      return upvotes - downvotes;
+    },
+    [reviewVotes]
+  );
+
+  // --- Standard functions ---
+
   const submitTutorial = useCallback(
     (tutorialData, userId) => {
       const newTutorial = {
@@ -267,6 +369,14 @@ export function TutorialProvider({ children }) {
       toggleBookmark,
       isBookmarked,
       getUserBookmarks,
+      toggleCompleted,
+      isCompleted,
+      getUserCompletedTutorials,
+      getUserCompletedCount,
+      voteOnReview,
+      getReviewVotes,
+      getUserReviewVote,
+      getReviewNetVotes,
       submitTutorial,
       getUserSubmissions,
       editSubmission,
@@ -292,6 +402,14 @@ export function TutorialProvider({ children }) {
       toggleBookmark,
       isBookmarked,
       getUserBookmarks,
+      toggleCompleted,
+      isCompleted,
+      getUserCompletedTutorials,
+      getUserCompletedCount,
+      voteOnReview,
+      getReviewVotes,
+      getUserReviewVote,
+      getReviewNetVotes,
       submitTutorial,
       getUserSubmissions,
       editSubmission,
