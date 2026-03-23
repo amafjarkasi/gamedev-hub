@@ -10,6 +10,7 @@ const DEFAULT_FILTERS = {
   categories: [],
   difficulties: [],
   platforms: [],
+  engineVersions: [],
   durationRange: 'any',
   minRating: 0,
 };
@@ -27,6 +28,10 @@ export function TutorialProvider({ children }) {
   const [completed, setCompleted] = useLocalStorage('kaz_completed', {});
   // Feature 2
   const [reviewVotes, setReviewVotes] = useLocalStorage('kaz_review_votes', {});
+  // Feature 5
+  const [freshnessVotes, setFreshnessVotes] = useLocalStorage('kaz_freshness_votes', {});
+  // Feature 6
+  const [followedTags, setFollowedTags] = useLocalStorage('kaz_followed_tags', {});
 
   // Merge mock tutorials with approved submissions, overlay dynamic data
   const allTutorials = useMemo(() => {
@@ -251,6 +256,98 @@ export function TutorialProvider({ children }) {
     [reviewVotes]
   );
 
+  // --- Feature 5 (Freshness) functions ---
+  const voteFreshness = useCallback(
+    (tutorialId, userId, type) => {
+      setFreshnessVotes((prev) => {
+        const votes = prev[tutorialId] || [];
+        const existingIndex = votes.findIndex((v) => v.userId === userId);
+        const newVotes = [...votes];
+        if (existingIndex >= 0) {
+          newVotes[existingIndex] = { userId, type, date: new Date().toISOString() };
+        } else {
+          newVotes.push({ userId, type, date: new Date().toISOString() });
+        }
+        return { ...prev, [tutorialId]: newVotes };
+      });
+    },
+    [setFreshnessVotes]
+  );
+
+  const getFreshnessStatus = useCallback(
+    (tutorialId) => {
+      const votes = freshnessVotes[tutorialId] || [];
+      const worksCount = votes.filter((v) => v.type === 'works').length;
+      const outdatedCount = votes.filter((v) => v.type === 'outdated').length;
+      let consensus = 'unknown';
+      if (worksCount + outdatedCount >= 3) {
+        if (outdatedCount > worksCount) consensus = 'outdated';
+        else consensus = 'works';
+      } else if (worksCount > 0 && outdatedCount === 0) {
+         consensus = 'works';
+      } else if (outdatedCount > 0 && worksCount === 0) {
+         consensus = 'outdated';
+      }
+      return { worksCount, outdatedCount, consensus };
+    },
+    [freshnessVotes]
+  );
+
+  const getUserFreshnessVote = useCallback(
+    (tutorialId, userId) => {
+      const votes = freshnessVotes[tutorialId] || [];
+      const vote = votes.find((v) => v.userId === userId);
+      return vote ? vote.type : null;
+    },
+    [freshnessVotes]
+  );
+
+  // --- Feature 6 (Tags) functions ---
+  const followTag = useCallback(
+    (userId, tag) => {
+      setFollowedTags((prev) => {
+        const tags = prev[userId] || [];
+        if (tags.includes(tag)) return prev;
+        return { ...prev, [userId]: [...tags, tag] };
+      });
+    },
+    [setFollowedTags]
+  );
+
+  const unfollowTag = useCallback(
+    (userId, tag) => {
+      setFollowedTags((prev) => {
+        const tags = prev[userId] || [];
+        return { ...prev, [userId]: tags.filter((t) => t !== tag) };
+      });
+    },
+    [setFollowedTags]
+  );
+
+  const isTagFollowed = useCallback(
+    (userId, tag) => {
+      return (followedTags[userId] || []).includes(tag);
+    },
+    [followedTags]
+  );
+
+  const getFollowedTags = useCallback(
+    (userId) => {
+      return followedTags[userId] || [];
+    },
+    [followedTags]
+  );
+
+  const getForYouTutorials = useCallback(
+    (userId) => {
+      const tags = followedTags[userId] || [];
+      if (tags.length === 0) return [];
+      const matches = allTutorials.filter((t) => t.tags.some((tag) => tags.includes(tag)));
+      return matches.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 8);
+    },
+    [followedTags, allTutorials]
+  );
+
   // --- Standard functions ---
 
   const submitTutorial = useCallback(
@@ -377,6 +474,14 @@ export function TutorialProvider({ children }) {
       getReviewVotes,
       getUserReviewVote,
       getReviewNetVotes,
+      voteFreshness,
+      getFreshnessStatus,
+      getUserFreshnessVote,
+      followTag,
+      unfollowTag,
+      isTagFollowed,
+      getFollowedTags,
+      getForYouTutorials,
       submitTutorial,
       getUserSubmissions,
       editSubmission,
@@ -410,6 +515,14 @@ export function TutorialProvider({ children }) {
       getReviewVotes,
       getUserReviewVote,
       getReviewNetVotes,
+      voteFreshness,
+      getFreshnessStatus,
+      getUserFreshnessVote,
+      followTag,
+      unfollowTag,
+      isTagFollowed,
+      getFollowedTags,
+      getForYouTutorials,
       submitTutorial,
       getUserSubmissions,
       editSubmission,

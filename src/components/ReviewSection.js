@@ -11,6 +11,7 @@ export default function ReviewSection({
   onSubmitReview,
 }) {
   const [text, setText] = useState('');
+  const [sortMode, setSortMode] = useState('helpful');
   const { voteOnReview, getReviewNetVotes, getUserReviewVote } = useTutorials();
 
   const handleSubmit = (e) => {
@@ -19,6 +20,16 @@ export default function ReviewSection({
     onSubmitReview(text.trim());
     setText('');
   };
+
+  const sortedReviews = [...reviews].sort((a, b) => {
+    if (sortMode === 'helpful') {
+      const netA = getReviewNetVotes(a.id);
+      const netB = getReviewNetVotes(b.id);
+      if (netA !== netB) return netB - netA;
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    }
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
 
   return (
     <div className={styles.section}>
@@ -50,13 +61,31 @@ export default function ReviewSection({
         </p>
       )}
 
-      <div className={styles.reviewList}>
-        {reviews.length === 0 ? (
-          <p className={styles.noReviews}>
-            No reviews yet. Be the first to share your thoughts!
-          </p>
-        ) : (
-          reviews.map((review) => {
+      <div className={styles.reviewListContainer}>
+        {reviews.length > 0 && (
+          <div className={styles.sortControls}>
+            <button
+              className={`${styles.sortBtn} ${sortMode === 'helpful' ? styles.sortBtnActive : ''}`}
+              onClick={() => setSortMode('helpful')}
+            >
+              Most Helpful
+            </button>
+            <button
+              className={`${styles.sortBtn} ${sortMode === 'newest' ? styles.sortBtnActive : ''}`}
+              onClick={() => setSortMode('newest')}
+            >
+              Newest
+            </button>
+          </div>
+        )}
+
+        <div className={styles.reviewList}>
+          {reviews.length === 0 ? (
+            <p className={styles.noReviews}>
+              No reviews yet. Be the first to share your thoughts!
+            </p>
+          ) : (
+            sortedReviews.map((review) => {
             const netVotes = getReviewNetVotes(review.id);
             const userVote = isAuthenticated ? getUserReviewVote(review.id, currentUser.id) : null;
 
@@ -94,6 +123,7 @@ export default function ReviewSection({
             );
           })
         )}
+        </div>
       </div>
     </div>
   );

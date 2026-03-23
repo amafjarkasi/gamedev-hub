@@ -10,6 +10,13 @@ A modern, feature-rich web application for discovering, sharing, and organizing 
 ## Features
 
 ### Core
+- **Mark as Completed** — Users can mark tutorials as completed to track their progress, visible on cards and their profile.
+- **Review Helpfulness Voting** — Users can upvote/downvote reviews, and reviews can be sorted by Most Helpful or Newest.
+- **Tutorial Series Grouping** — Related tutorials are grouped into numbered series with prev/next navigation.
+- **Engine Version Tags** — Track specific engine versions (e.g. Unity 6, Unreal 5.4) with filtering capabilities.
+- **Community Freshness Flags** — Users can vote if a tutorial "Still Works" or is "Outdated", providing a consensus badge.
+- **Personalized "For You" Feed** — Follow specific tags to get a curated list of tutorials on the home page.
+- **Prerequisite Links** — "Watch These First" links guide users through learning paths.
 - **Tutorial Gallery** — Responsive card grid with YouTube thumbnails, metadata, difficulty badges, and platform tags
 - **Advanced Search & Filtering** — Filter by category, difficulty, platform, duration, and rating with active filter chips and sort options
 - **URL-Synced Filters** — Search filters persist in the URL query string and localStorage, enabling shareable filtered views

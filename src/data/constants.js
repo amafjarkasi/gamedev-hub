@@ -21,6 +21,22 @@ export const PLATFORMS = [
   { value: 'Custom', label: 'Custom / Other' },
 ];
 
+export const SERIES = [
+  { id: 'series-godot-beginner', title: 'Godot 4 Beginner Series' },
+  { id: 'series-game-design', title: 'Game Design Fundamentals' },
+  { id: 'series-gamemaker', title: 'GameMaker Masterclass' }
+];
+
+export const ENGINE_VERSIONS = [
+  { value: 'Unity 2022 LTS', label: 'Unity 2022 LTS' },
+  { value: 'Unity 6', label: 'Unity 6' },
+  { value: 'Unreal 5.3', label: 'Unreal 5.3' },
+  { value: 'Unreal 5.4', label: 'Unreal 5.4' },
+  { value: 'Godot 4.2', label: 'Godot 4.2' },
+  { value: 'Godot 4.3', label: 'Godot 4.3' },
+  { value: 'GameMaker 2024', label: 'GameMaker 2024' }
+];
+
 export const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest First' },
   { value: 'popular', label: 'Most Popular' },

@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useTutorials } from '../hooks/useTutorials';
 import { useToast } from '../hooks/useToast';
 import { isValidVideoUrl, getThumbnailUrl, extractVideoId, checkVideoAvailability } from '../utils/videoUtils';
-import { CATEGORIES, DIFFICULTIES, PLATFORMS } from '../data/constants';
+import { CATEGORIES, DIFFICULTIES, PLATFORMS, ENGINE_VERSIONS } from '../data/constants';
 import styles from './SubmitPage.module.css';
 
 export default function SubmitPage() {
   const { currentUser, isAuthenticated } = useAuth();
-  const { submitTutorial } = useTutorials();
+  const { submitTutorial, allTutorials, getTutorialById } = useTutorials();
   const { addToast } = useToast();
   const [error, setError] = useState('');
   const [validating, setValidating] = useState(false);
@@ -20,9 +20,25 @@ export default function SubmitPage() {
     category: '',
     difficulty: '',
     platform: '',
+    engineVersion: '',
     tags: '',
     estimatedDuration: '',
   });
+
+  const [prereqs, setPrereqs] = useState([]);
+  const [prereqInput, setPrereqInput] = useState('');
+  const [showPrereqDropdown, setShowPrereqDropdown] = useState(false);
+  const prereqRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (prereqRef.current && !prereqRef.current.contains(event.target)) {
+        setShowPrereqDropdown(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   if (!isAuthenticated) {
     return (
@@ -34,6 +50,25 @@ export default function SubmitPage() {
       </div>
     );
   }
+
+  const filteredTutorialsForPrereq = allTutorials.filter((t) => 
+    t.title.toLowerCase().includes(prereqInput.toLowerCase()) && 
+    !prereqs.includes(t.id)
+  ).slice(0, 5);
+
+  const handleAddPrereq = (tutId) => {
+    if (prereqs.length >= 5) {
+      setError('Maximum 5 prerequisites allowed');
+      return;
+    }
+    setPrereqs([...prereqs, tutId]);
+    setPrereqInput('');
+    setShowPrereqDropdown(false);
+  };
+
+  const handleRemovePrereq = (tutId) => {
+    setPrereqs(prereqs.filter((id) => id !== tutId));
+  };
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -74,7 +109,6 @@ export default function SubmitPage() {
       return;
     }
 
-    // Validate video availability before submitting
     setValidating(true);
     try {
       const availability = await checkVideoAvailability(form.url.trim());
@@ -87,7 +121,7 @@ export default function SubmitPage() {
         return;
       }
     } catch {
-      // If validation itself fails due to network, allow submission
+      // ignore
     }
     setValidating(false);
 
@@ -110,8 +144,10 @@ export default function SubmitPage() {
         category: form.category,
         difficulty: form.difficulty,
         platform: form.platform,
+        engineVersion: form.engineVersion || undefined,
         tags,
         estimatedDuration: duration,
+        prerequisites: prereqs.length > 0 ? prereqs : undefined,
         author: {
           id: currentUser.id,
           name: currentUser.displayName,
@@ -129,9 +165,11 @@ export default function SubmitPage() {
       category: '',
       difficulty: '',
       platform: '',
+      engineVersion: '',
       tags: '',
       estimatedDuration: '',
     });
+    setPrereqs([]);
   };
 
   return (
@@ -246,6 +284,26 @@ export default function SubmitPage() {
 
           <div className={styles.field}>
             <label className={styles.label}>
+              Engine Version (Optional)
+            </label>
+            <select
+              className={styles.select}
+              value={form.engineVersion}
+              onChange={handleChange('engineVersion')}
+            >
+              <option value="">Select version</option>
+              {ENGINE_VERSIONS.map((ver) => (
+                <option key={ver.value} value={ver.value}>
+                  {ver.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className={styles.row}>
+          <div className={styles.field}>
+            <label className={styles.label}>
               Duration (minutes) <span className={styles.required}>*</span>
             </label>
             <input
@@ -258,18 +316,67 @@ export default function SubmitPage() {
               max={600}
             />
           </div>
+          
+          <div className={styles.field}>
+            <label className={styles.label}>Tags</label>
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="e.g., platformer, physics, beginner"
+              value={form.tags}
+              onChange={handleChange('tags')}
+            />
+            <span className={styles.hint}>Comma-separated, max 5 tags</span>
+          </div>
         </div>
 
-        <div className={styles.field}>
-          <label className={styles.label}>Tags</label>
-          <input
-            type="text"
-            className={styles.input}
-            placeholder="e.g., platformer, physics, beginner"
-            value={form.tags}
-            onChange={handleChange('tags')}
-          />
-          <span className={styles.hint}>Comma-separated, max 5 tags</span>
+        <div className={styles.field} ref={prereqRef}>
+          <label className={styles.label}>Prerequisites (Optional)</label>
+          <div className={styles.prereqContainer}>
+            {prereqs.length > 0 && (
+              <div className={styles.prereqChips}>
+                {prereqs.map(id => {
+                  const tut = getTutorialById(id);
+                  if (!tut) return null;
+                  return (
+                    <span key={id} className={styles.prereqChip}>
+                      {tut.title}
+                      <button type="button" onClick={() => handleRemovePrereq(id)}>&times;</button>
+                    </span>
+                  );
+                })}
+              </div>
+            )}
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="Search tutorials to add as prerequisites..."
+              value={prereqInput}
+              onChange={(e) => {
+                setPrereqInput(e.target.value);
+                setShowPrereqDropdown(true);
+              }}
+              onFocus={() => setShowPrereqDropdown(true)}
+            />
+            {showPrereqDropdown && prereqInput.trim().length > 0 && (
+              <div className={styles.prereqDropdown}>
+                {filteredTutorialsForPrereq.length === 0 ? (
+                  <div className={styles.prereqDropdownEmpty}>No tutorials found</div>
+                ) : (
+                  filteredTutorialsForPrereq.map(t => (
+                    <button 
+                      key={t.id} 
+                      type="button" 
+                      className={styles.prereqDropdownItem}
+                      onClick={() => handleAddPrereq(t.id)}
+                    >
+                      {t.title}
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         <button type="submit" className={styles.submitBtn} disabled={validating}>

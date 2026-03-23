@@ -1,0 +1,40 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-accent-primary);
+  background: var(--color-accent-primary-dim);
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tag:not(.disabled):hover {
+  background: var(--color-accent-primary);
+  color: var(--color-text-inverse);
+}
+
+.followed {
+  border-color: var(--color-accent-primary);
+  background: transparent;
+}
+
+.followed:hover {
+  background: rgba(255, 71, 87, 0.1); /* Subtle red for unfollow */
+  border-color: var(--color-accent-danger);
+  color: var(--color-accent-danger);
+}
+
+.disabled {
+  cursor: default;
+}
+
+.icon {
+  font-size: 14px;
+  line-height: 1;
+  font-weight: bold;
+}

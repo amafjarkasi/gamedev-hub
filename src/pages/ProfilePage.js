@@ -5,15 +5,16 @@ import { useTutorials } from '../hooks/useTutorials';
 import { useToast } from '../hooks/useToast';
 import { formatDate } from '../utils/formatUtils';
 import { isValidVideoUrl, getThumbnailUrl, extractVideoId } from '../utils/videoUtils';
-import { CATEGORIES, DIFFICULTIES, PLATFORMS } from '../data/constants';
+import { CATEGORIES, DIFFICULTIES, PLATFORMS, ENGINE_VERSIONS } from '../data/constants';
 import TutorialGallery from '../components/TutorialGallery';
 import Modal from '../components/Modal';
 import EmptyState from '../components/EmptyState';
+import FollowableTag from '../components/FollowableTag';
 import styles from './ProfilePage.module.css';
 
 export default function ProfilePage() {
   const { currentUser, isAuthenticated } = useAuth();
-  const { getUserBookmarks, getUserSubmissions, editSubmission, deleteSubmission, getUserCompletedTutorials } = useTutorials();
+  const { getUserBookmarks, getUserSubmissions, editSubmission, deleteSubmission, getUserCompletedTutorials, getFollowedTags, unfollowTag } = useTutorials();
   const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState('bookmarks');
   const [deletingTutorial, setDeletingTutorial] = useState(null);
@@ -30,6 +31,7 @@ export default function ProfilePage() {
         category: editingTutorial.category,
         difficulty: editingTutorial.difficulty,
         platform: editingTutorial.platform,
+        engineVersion: editingTutorial.engineVersion || '',
         tags: (editingTutorial.tags || []).join(', '),
         estimatedDuration: String(editingTutorial.estimatedDuration || ''),
       });
@@ -52,6 +54,7 @@ export default function ProfilePage() {
   const bookmarks = getUserBookmarks(currentUser.id);
   const submissions = getUserSubmissions(currentUser.id);
   const completedTutorials = getUserCompletedTutorials(currentUser.id);
+  const followedTags = getFollowedTags(currentUser.id);
 
   const handleDelete = () => {
     if (!deletingTutorial) return;
@@ -119,6 +122,7 @@ export default function ProfilePage() {
         category: editForm.category,
         difficulty: editForm.difficulty,
         platform: editForm.platform,
+        engineVersion: editForm.engineVersion || undefined,
         tags,
         estimatedDuration: duration,
       },
@@ -162,6 +166,12 @@ export default function ProfilePage() {
         >
           My Submissions ({submissions.length})
         </button>
+        <button
+          className={`${styles.tab} ${activeTab === 'tags' ? styles.tabActive : ''}`}
+          onClick={() => setActiveTab('tags')}
+        >
+          Tags ({followedTags.length})
+        </button>
       </div>
 
       {activeTab === 'bookmarks' && (
@@ -180,6 +190,32 @@ export default function ProfilePage() {
           emptyTitle="No completed tutorials"
           emptyMessage="Mark tutorials as completed when you finish them to track your progress."
         />
+      )}
+
+      {activeTab === 'tags' && (
+        <div className={styles.tagsContainer}>
+          {followedTags.length > 0 ? (
+            <div className={styles.tagChips}>
+              {followedTags.map(tag => (
+                <FollowableTag 
+                  key={tag} 
+                  tag={tag} 
+                  isFollowed={true}
+                  onToggle={() => {
+                    unfollowTag(currentUser.id, tag);
+                    addToast(`Unfollowed #${tag}`, 'info');
+                  }}
+                  isAuthenticated={true}
+                />
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              title="No tags followed"
+              message="Follow tags to personalize your For You feed."
+            />
+          )}
+        </div>
       )}
 
       {activeTab === 'submissions' && (
@@ -301,6 +337,17 @@ export default function ProfilePage() {
                   ))}
                 </select>
               </div>
+              <div className={styles.field}>
+                <label className={styles.fieldLabel}>Engine Version</label>
+                <select className={styles.fieldSelect} value={editForm.engineVersion} onChange={handleEditChange('engineVersion')}>
+                  <option value="">Select version</option>
+                  {ENGINE_VERSIONS.map((ver) => (
+                    <option key={ver.value} value={ver.value}>{ver.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className={styles.fieldRow}>
               <div className={styles.field}>
                 <label className={styles.fieldLabel}>Duration (min)</label>
                 <input

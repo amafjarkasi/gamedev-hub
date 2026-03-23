@@ -29,6 +29,7 @@ export default function SearchPage() {
     const cat = searchParams.get('cat');
     const diff = searchParams.get('diff');
     const plat = searchParams.get('plat');
+    const ver = searchParams.get('ver');
     const dur = searchParams.get('dur');
     const rating = searchParams.get('rating');
     const sort = searchParams.get('sort');
@@ -37,6 +38,7 @@ export default function SearchPage() {
     if (cat) parsed.categories = cat.split(',').filter(Boolean);
     if (diff) parsed.difficulties = diff.split(',').filter(Boolean);
     if (plat) parsed.platforms = plat.split(',').filter(Boolean);
+    if (ver) parsed.engineVersions = ver.split(',').filter(Boolean);
     if (dur) parsed.durationRange = dur;
     if (rating) parsed.minRating = parseFloat(rating) || 0;
 
@@ -67,6 +69,8 @@ export default function SearchPage() {
       params.set('diff', filters.difficulties.join(','));
     if (filters.platforms?.length > 0)
       params.set('plat', filters.platforms.join(','));
+    if (filters.engineVersions?.length > 0)
+      params.set('ver', filters.engineVersions.join(','));
     if (filters.durationRange && filters.durationRange !== 'any')
       params.set('dur', filters.durationRange);
     if (filters.minRating && filters.minRating > 0)

@@ -78,6 +78,16 @@
   font-weight: 500;
 }
 
+.tagsContainer {
+  padding: var(--space-xl) 0;
+}
+
+.tagChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
 @media (max-width: 768px) {
   .profileHeader {
     flex-direction: column;

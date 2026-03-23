@@ -33,6 +33,13 @@ export function filterTutorials(tutorials, filters) {
       }
     }
 
+    // Engine Version filter
+    if (filters.engineVersions && filters.engineVersions.length > 0) {
+      if (!filters.engineVersions.includes(tutorial.engineVersion)) {
+        return false;
+      }
+    }
+
     // Duration filter
     if (filters.durationRange && filters.durationRange !== 'any') {
       const { min, max } = getDurationBounds(filters.durationRange);
@@ -84,6 +91,7 @@ export function getActiveFilterCount(filters) {
   if (filters.categories?.length > 0) count += filters.categories.length;
   if (filters.difficulties?.length > 0) count += filters.difficulties.length;
   if (filters.platforms?.length > 0) count += filters.platforms.length;
+  if (filters.engineVersions?.length > 0) count += filters.engineVersions.length;
   if (filters.durationRange && filters.durationRange !== 'any') count++;
   if (filters.minRating && filters.minRating > 0) count++;
   return count;

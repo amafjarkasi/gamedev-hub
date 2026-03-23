@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { CATEGORIES, DIFFICULTIES, PLATFORMS, DURATION_RANGES } from '../data/constants';
+import { CATEGORIES, DIFFICULTIES, PLATFORMS, ENGINE_VERSIONS, DURATION_RANGES } from '../data/constants';
 import { useDebounce } from '../hooks/useDebounce';
 import { filterShape } from '../utils/propTypeShapes';
 import styles from './SearchFilter.module.css';
@@ -165,6 +165,23 @@ export default function SearchFilter({ filters, onFilterChange, onReset }) {
                 onChange={() => handleCheckboxToggle('platforms', plat.value)}
               />
               <span className={styles.checkboxLabel}>{plat.label}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Engine Version */}
+      <div className={styles.filterGroup}>
+        <span className={styles.filterLabel}>Engine Version</span>
+        <div className={styles.checkboxGroup}>
+          {ENGINE_VERSIONS.map((ver) => (
+            <label key={ver.value} className={styles.checkbox}>
+              <input
+                type="checkbox"
+                checked={(filters.engineVersions || []).includes(ver.value)}
+                onChange={() => handleCheckboxToggle('engineVersions', ver.value)}
+              />
+              <span className={styles.checkboxLabel}>{ver.label}</span>
             </label>
           ))}
         </div>

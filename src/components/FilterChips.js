@@ -22,6 +22,10 @@ export default function FilterChips({ filters, onRemoveFilter, onClearAll }) {
     chips.push({ key: `plat-${plat}`, label: plat, type: 'platforms', value: plat });
   });
 
+  (filters.engineVersions || []).forEach((ver) => {
+    chips.push({ key: `ver-${ver}`, label: ver, type: 'engineVersions', value: ver });
+  });
+
   if (filters.durationRange && filters.durationRange !== 'any') {
     const labels = { short: '<15 min', medium: '15-60 min', long: '1-3 hrs', 'extra-long': '>3 hrs' };
     chips.push({

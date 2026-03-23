@@ -9,8 +9,12 @@ export const tutorialShape = PropTypes.shape({
   category: PropTypes.string.isRequired,
   difficulty: PropTypes.oneOf(['Beginner', 'Intermediate', 'Advanced']).isRequired,
   platform: PropTypes.string.isRequired,
+  engineVersion: PropTypes.string,
   tags: PropTypes.arrayOf(PropTypes.string),
   estimatedDuration: PropTypes.number,
+  seriesId: PropTypes.string,
+  seriesOrder: PropTypes.number,
+  prerequisites: PropTypes.arrayOf(PropTypes.string),
   author: PropTypes.shape({
     id: PropTypes.string,
     name: PropTypes.string.isRequired,
@@ -26,6 +30,7 @@ export const filterShape = PropTypes.shape({
   categories: PropTypes.arrayOf(PropTypes.string),
   difficulties: PropTypes.arrayOf(PropTypes.string),
   platforms: PropTypes.arrayOf(PropTypes.string),
+  engineVersions: PropTypes.arrayOf(PropTypes.string),
   durationRange: PropTypes.string,
   minRating: PropTypes.number,
 });

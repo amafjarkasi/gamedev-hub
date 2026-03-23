@@ -1,15 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTutorials } from '../hooks/useTutorials';
+import { useAuth } from '../hooks/useAuth';
 import { CATEGORIES } from '../data/constants';
 import TutorialGallery from '../components/TutorialGallery';
 import styles from './HomePage.module.css';
 
 export default function HomePage() {
-  const { featuredTutorials, popularTutorials, allTutorials } = useTutorials();
+  const { featuredTutorials, popularTutorials, allTutorials, getForYouTutorials } = useTutorials();
+  const { currentUser, isAuthenticated } = useAuth();
 
   const getCategoryCount = (category) =>
     allTutorials.filter((t) => t.category === category).length;
+
+  const forYouTutorials = isAuthenticated ? getForYouTutorials(currentUser.id) : [];
 
   return (
     <div>
@@ -34,6 +38,17 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* For You Section */}
+      {isAuthenticated && forYouTutorials.length > 0 && (
+        <section className={styles.section}>
+          <TutorialGallery
+            tutorials={forYouTutorials}
+            title="For You"
+            subtitle="Based on tags you follow"
+          />
+        </section>
+      )}
 
       {/* Featured Section */}
       <section className={styles.section}>

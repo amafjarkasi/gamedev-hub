@@ -1,0 +1,96 @@
+.container {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin: var(--space-lg) 0;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.voteBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background: transparent;
+}
+
+.worksBtn {
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.worksBtn:not(:disabled):hover {
+  border-color: var(--color-accent-success, #2ecc71);
+  color: var(--color-accent-success, #2ecc71);
+}
+
+.activeWorks {
+  background: var(--color-accent-success-dim, rgba(46, 204, 113, 0.15));
+  border-color: var(--color-accent-success, #2ecc71);
+  color: var(--color-accent-success, #2ecc71);
+}
+
+.outdatedBtn {
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.outdatedBtn:not(:disabled):hover {
+  border-color: var(--color-accent-danger, #ff4757);
+  color: var(--color-accent-danger, #ff4757);
+}
+
+.activeOutdated {
+  background: var(--color-accent-danger-dim, rgba(255, 71, 87, 0.15));
+  border-color: var(--color-accent-danger, #ff4757);
+  color: var(--color-accent-danger, #ff4757);
+}
+
+.voteBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.icon {
+  font-size: 1.2em;
+}
+
+.loginPrompt {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-align: right;
+}

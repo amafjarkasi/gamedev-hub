@@ -13,6 +13,7 @@ const mockTutorials = [
     category: '2D Game Development',
     difficulty: 'Beginner',
     platform: 'Unity',
+    engineVersion: 'Unity 2022 LTS',
     tags: ['unity', 'platformer', '2d'],
     author: { id: 'a1', name: 'Alice' },
     estimatedDuration: 30,
@@ -27,6 +28,7 @@ const mockTutorials = [
     category: 'Game Programming',
     difficulty: 'Intermediate',
     platform: 'Godot',
+    engineVersion: 'Godot 4.2',
     tags: ['godot', 'rpg', 'gd-script'],
     author: { id: 'a2', name: 'Bob' },
     estimatedDuration: 90,
@@ -41,6 +43,7 @@ const mockTutorials = [
     category: '3D Game Development',
     difficulty: 'Advanced',
     platform: 'Unreal Engine',
+    engineVersion: 'Unreal 5.3',
     tags: ['unreal', 'shooter', '3d', 'blueprints'],
     author: { id: 'a3', name: 'Charlie' },
     estimatedDuration: 200,
@@ -109,6 +112,14 @@ describe('filterTutorials', () => {
     });
     expect(result).toHaveLength(1);
     expect(result[0].id).toBe('2');
+  });
+
+  test('filters by engine version', () => {
+    const result = filterTutorials(mockTutorials, {
+      engineVersions: ['Unity 2022 LTS'],
+    });
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('1');
   });
 
   test('filters by duration range - short', () => {

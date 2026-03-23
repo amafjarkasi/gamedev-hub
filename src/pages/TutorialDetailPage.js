@@ -5,6 +5,7 @@ import { useTutorials } from '../hooks/useTutorials';
 import { useToast } from '../hooks/useToast';
 import { formatDuration, formatViewCount, formatDate } from '../utils/formatUtils';
 import { sanitizeUrl } from '../utils/videoUtils';
+import { SERIES } from '../data/constants';
 import VideoEmbed from '../components/VideoEmbed';
 import TutorialGallery from '../components/TutorialGallery';
 import DifficultyBadge from '../components/DifficultyBadge';
@@ -12,6 +13,10 @@ import StarDisplay from '../components/StarDisplay';
 import RatingWidget from '../components/RatingWidget';
 import ReviewSection from '../components/ReviewSection';
 import ShareButtons from '../components/ShareButtons';
+import FreshnessBadge from '../components/FreshnessBadge';
+import FreshnessVoter from '../components/FreshnessVoter';
+import FollowableTag from '../components/FollowableTag';
+import PrerequisiteSection from '../components/PrerequisiteSection';
 import styles from './TutorialDetailPage.module.css';
 
 export default function TutorialDetailPage() {
@@ -30,6 +35,12 @@ export default function TutorialDetailPage() {
     isBookmarked,
     toggleCompleted,
     isCompleted,
+    voteFreshness,
+    getFreshnessStatus,
+    getUserFreshnessVote,
+    followTag,
+    unfollowTag,
+    isTagFollowed,
   } = useTutorials();
   const { addToast } = useToast();
 
@@ -42,6 +53,29 @@ export default function TutorialDetailPage() {
       .sort((a, b) => b.averageRating - a.averageRating)
       .slice(0, 4);
   }, [allTutorials, tutorial]);
+
+  const prerequisiteTutorials = useMemo(() => {
+    if (!tutorial || !tutorial.prerequisites) return [];
+    return tutorial.prerequisites.map(prereqId => getTutorialById(prereqId)).filter(Boolean);
+  }, [tutorial, getTutorialById]);
+
+  const seriesInfo = useMemo(() => {
+    if (!tutorial || !tutorial.seriesId) return null;
+    const seriesTutorials = allTutorials.filter(t => t.seriesId === tutorial.seriesId)
+      .sort((a, b) => (a.seriesOrder || 0) - (b.seriesOrder || 0));
+    
+    const currentIndex = seriesTutorials.findIndex(t => t.id === tutorial.id);
+    const prev = currentIndex > 0 ? seriesTutorials[currentIndex - 1] : null;
+    const next = currentIndex < seriesTutorials.length - 1 ? seriesTutorials[currentIndex + 1] : null;
+    
+    return {
+      seriesData: SERIES.find(s => s.id === tutorial.seriesId),
+      total: seriesTutorials.length,
+      current: tutorial.seriesOrder || 1,
+      prev,
+      next
+    };
+  }, [tutorial, allTutorials]);
 
   useEffect(() => {
     if (tutorial) {
@@ -70,6 +104,9 @@ export default function TutorialDetailPage() {
   const reviews = getReviewsForTutorial(tutorial.id);
   const bookmarked = isAuthenticated && isBookmarked(currentUser.id, tutorial.id);
   const completed = isAuthenticated && isCompleted(currentUser.id, tutorial.id);
+  
+  const freshnessStatus = getFreshnessStatus(tutorial.id);
+  const userFreshnessVote = isAuthenticated ? getUserFreshnessVote(tutorial.id, currentUser.id) : null;
 
   const handleRate = (rating) => {
     if (isAuthenticated) {
@@ -103,6 +140,21 @@ export default function TutorialDetailPage() {
     addToast(completed ? 'Marked as uncompleted' : 'Marked as completed', 'success');
   };
 
+  const handleFreshnessVote = (type) => {
+    voteFreshness(tutorial.id, currentUser.id, type);
+    addToast('Thanks for your feedback!', 'success');
+  };
+
+  const handleTagToggle = (tag) => {
+    if (isTagFollowed(currentUser.id, tag)) {
+      unfollowTag(currentUser.id, tag);
+      addToast(`Unfollowed #${tag}`, 'info');
+    } else {
+      followTag(currentUser.id, tag);
+      addToast(`Followed #${tag}`, 'success');
+    }
+  };
+
   return (
     <div className={styles.page}>
       <Link to="/search" className={styles.backLink}>
@@ -114,11 +166,34 @@ export default function TutorialDetailPage() {
       </div>
 
       <div className={styles.infoSection}>
+        {seriesInfo && seriesInfo.seriesData && (
+          <div className={styles.seriesNav}>
+            <span className={styles.seriesTitle}>
+              <strong>Series: {seriesInfo.seriesData.title}</strong> (Part {seriesInfo.current} of {seriesInfo.total})
+            </span>
+            <div className={styles.seriesLinks}>
+              {seriesInfo.prev ? (
+                <Link to={`/tutorial/${seriesInfo.prev.id}`} className={styles.seriesPrev}>
+                  &laquo; Previous
+                </Link>
+              ) : <span className={styles.seriesPrevDisabled}>&laquo; Previous</span>}
+              {seriesInfo.next ? (
+                <Link to={`/tutorial/${seriesInfo.next.id}`} className={styles.seriesNext}>
+                  Next &raquo;
+                </Link>
+              ) : <span className={styles.seriesNextDisabled}>Next &raquo;</span>}
+            </div>
+          </div>
+        )}
+
         <div className={styles.titleRow}>
           <h1 className={styles.title}>{tutorial.title}</h1>
           <div className={styles.badges}>
             <DifficultyBadge difficulty={tutorial.difficulty} />
             <span className={styles.platformTag}>{tutorial.platform}</span>
+            {tutorial.engineVersion && (
+              <span className={styles.versionTag}>{tutorial.engineVersion}</span>
+            )}
           </div>
         </div>
 
@@ -139,15 +214,22 @@ export default function TutorialDetailPage() {
             rating={tutorial.averageRating}
             count={tutorial.ratingCount}
           />
+          <FreshnessBadge consensus={freshnessStatus.consensus} />
         </div>
+
+        <PrerequisiteSection prerequisites={prerequisiteTutorials} />
 
         <p className={styles.description}>{tutorial.description}</p>
 
         <div className={styles.tags}>
           {tutorial.tags.map((tag) => (
-            <span key={tag} className={styles.tag}>
-              {tag}
-            </span>
+            <FollowableTag 
+              key={tag} 
+              tag={tag} 
+              isFollowed={isAuthenticated ? isTagFollowed(currentUser.id, tag) : false}
+              onToggle={handleTagToggle}
+              isAuthenticated={isAuthenticated}
+            />
           ))}
         </div>
 
@@ -156,7 +238,7 @@ export default function TutorialDetailPage() {
             className={`${styles.completedBtn} ${completed ? styles.completedActive : ''}`}
             onClick={handleCompleted}
           >
-            {completed ? '&#10003; Completed' : 'Mark as Completed'}
+            {completed ? '\u2713 Completed' : 'Mark as Completed'}
           </button>
           <button
             className={`${styles.bookmarkBtn} ${bookmarked ? styles.bookmarked : ''}`}
@@ -174,6 +256,13 @@ export default function TutorialDetailPage() {
           </a>
           <ShareButtons title={tutorial.title} url={tutorial.url} />
         </div>
+
+        <FreshnessVoter 
+          status={freshnessStatus} 
+          userVote={userFreshnessVote} 
+          onVote={handleFreshnessVote} 
+          isAuthenticated={isAuthenticated} 
+        />
 
         <div className={styles.ratingSection}>
           <h3 className={styles.ratingTitle}>Rate This Tutorial</h3>

@@ -92,6 +92,13 @@
   z-index: 2;
 }
 
+.freshnessWrapper {
+  position: absolute;
+  bottom: var(--space-sm);
+  left: var(--space-sm);
+  z-index: 2;
+}
+
 .cardCompleted .thumbnail {
   opacity: 0.6;
 }
@@ -135,6 +142,38 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-sm);
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  flex: 1;
+}
+
+.versionBadge {
+  display: inline-block;
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: var(--color-accent-warning-dim, rgba(243, 156, 18, 0.15));
+  color: var(--color-accent-warning, #f39c12);
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.seriesBadge {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 11px;
+  background: var(--color-accent-secondary-dim, rgba(155, 89, 182, 0.15));
+  color: var(--color-accent-secondary, #9b59b6);
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  margin-bottom: var(--space-xs);
 }
 
 .title {
