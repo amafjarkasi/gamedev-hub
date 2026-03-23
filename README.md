@@ -48,14 +48,14 @@ A modern, feature-rich web application for discovering, sharing, and organizing 
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | React 19 (Create React App) |
+| Framework | React 19 (Vite) |
 | Routing | React Router v7 (lazy loading, code splitting) |
 | Styling | CSS Modules + CSS Custom Properties |
 | State | React Context API |
 | Persistence | localStorage |
 | Security | Web Crypto API (PBKDF2) |
 | Validation | PropTypes |
-| Testing | Jest |
+| Testing | Vitest + React Testing Library |
 | Fonts | Inter, Space Grotesk, JetBrains Mono |
 
 ## Getting Started
@@ -64,10 +64,10 @@ A modern, feature-rich web application for discovering, sharing, and organizing 
 # Install dependencies
 npm install
 
-# Start development server
-npm start
+# Start development server (Vite)
+npm run dev
 
-# Run tests
+# Run tests (Vitest)
 npm test
 
 # Build for production
