@@ -1,3 +1,4 @@
+import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   formatDuration,
   formatViewCount,
@@ -60,12 +61,12 @@ describe('formatViewCount', () => {
 
 describe('formatDate', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
-    jest.setSystemTime(new Date('2026-03-22T12:00:00Z'));
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-03-22T12:00:00Z'));
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   test('formats today', () => {
