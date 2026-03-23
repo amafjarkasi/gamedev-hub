@@ -242,3 +242,27 @@
   border-radius: var(--radius-full);
   white-space: nowrap;
 }
+
+
+.playlistBtn {
+  position: absolute;
+  top: 0.5rem;
+  right: 3rem; /* place it to the left of the bookmark button */
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+.playlistBtn:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
+}

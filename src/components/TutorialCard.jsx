@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useTutorials } from '../hooks/useTutorials';
@@ -8,6 +9,7 @@ import { tutorialShape } from '../utils/propTypeShapes';
 import { SERIES } from '../data/constants';
 import DifficultyBadge from './DifficultyBadge';
 import StarDisplay from './StarDisplay';
+import AddToPlaylistModal from './AddToPlaylistModal';
 import FreshnessBadge from './FreshnessBadge';
 import styles from './TutorialCard.module.css';
 
@@ -17,6 +19,7 @@ export default function TutorialCard({ tutorial }) {
   const { toggleBookmark, isBookmarked, isCompleted, getFreshnessStatus } = useTutorials();
   const { addToast } = useToast();
   const [imgError, setImgError] = useState(false);
+  const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
 
   const bookmarked = isAuthenticated && isBookmarked(currentUser.id, tutorial.id);
   const completed = isAuthenticated && isCompleted(currentUser.id, tutorial.id);
@@ -37,7 +40,16 @@ export default function TutorialCard({ tutorial }) {
   };
 
   return (
-    <div className={`${styles.card} ${completed ? styles.cardCompleted : ''}`} onClick={handleClick} role="button" tabIndex={0}>
+    <motion.div
+      className={`${styles.card} ${completed ? styles.cardCompleted : ''}`}
+      onClick={handleClick}
+      role="button"
+      tabIndex={0}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      whileHover={{ y: -5 }}
+    >
       <div className={styles.thumbnailWrapper}>
         {!imgError ? (
           <img
@@ -56,6 +68,15 @@ export default function TutorialCard({ tutorial }) {
         <div className={styles.freshnessWrapper}>
           <FreshnessBadge consensus={freshnessStatus.consensus} compact />
         </div>
+
+        <button
+          className={styles.playlistBtn}
+          onClick={(e) => { e.stopPropagation(); if (!isAuthenticated) { navigate('/login'); return; } setIsPlaylistModalOpen(true); }}
+          aria-label="Save to Playlist"
+          title="Save to Playlist"
+        >
+          &#9776;
+        </button>
         <button
           className={`${styles.bookmarkBtn} ${bookmarked ? styles.bookmarked : ''}`}
           onClick={handleBookmark}
@@ -100,7 +121,12 @@ export default function TutorialCard({ tutorial }) {
           </div>
         </div>
       </div>
-    </div>
+      <AddToPlaylistModal
+        isOpen={isPlaylistModalOpen}
+        onClose={() => setIsPlaylistModalOpen(false)}
+        tutorialId={tutorial.id}
+      />
+    </motion.div>
   );
 }
 

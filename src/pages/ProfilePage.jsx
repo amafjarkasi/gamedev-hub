@@ -17,6 +17,7 @@ export default function ProfilePage() {
   const { getUserBookmarks, getUserSubmissions, editSubmission, deleteSubmission, getUserCompletedTutorials, getFollowedTags, unfollowTag } = useTutorials();
   const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState('bookmarks');
+  const [playlists, setPlaylists] = useState([]);
   const [deletingTutorial, setDeletingTutorial] = useState(null);
   const [editingTutorial, setEditingTutorial] = useState(null);
   const [editForm, setEditForm] = useState(null);
@@ -148,7 +149,14 @@ export default function ProfilePage() {
       </div>
 
       <div className={styles.tabs}>
-        <button
+
+            <button
+              className={`${styles.tab} ${activeTab === 'playlists' ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab('playlists')}
+            >
+              Playlists (${playlists.length})
+            </button>
+            <button
           className={`${styles.tab} ${activeTab === 'bookmarks' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('bookmarks')}
         >
@@ -174,7 +182,37 @@ export default function ProfilePage() {
         </button>
       </div>
 
-      {activeTab === 'bookmarks' && (
+
+        {activeTab === 'playlists' && (
+          <div className={styles.tabContent}>
+            <h2 className={styles.sectionTitle}>My Playlists</h2>
+            {playlists.length > 0 ? (
+              <div className={styles.playlistsGrid}>
+                {playlists.map(pl => (
+                  <div key={pl.id} className={styles.playlistCard}>
+                    <div className={styles.playlistHeader}>
+                      <h3 className={styles.playlistTitle}>{pl.name}</h3>
+                      <button
+                        className={styles.deleteBtn}
+                        onClick={() => { if(window.confirm('Delete playlist?')) deletePlaylist(currentUser.id, pl.id); }}
+                        title="Delete Playlist"
+                      >
+                        &#10005;
+                      </button>
+                    </div>
+                    <p className={styles.playlistCount}>{pl.tutorialIds.length} items</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className={styles.emptyState}>
+                <p>You haven't created any playlists yet.</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'bookmarks' && (
         <TutorialGallery
           tutorials={bookmarks}
           pageSize={12}

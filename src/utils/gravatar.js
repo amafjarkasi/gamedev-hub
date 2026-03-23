@@ -1,4 +1,4 @@
-import { md5 } from 'crypto-js';
+import MD5 from 'crypto-js/md5';
 
 /**
  * Generate Gravatar URL from email
@@ -9,7 +9,7 @@ import { md5 } from 'crypto-js';
  */
 export function getGravatarUrl(email, size = 80, defaultType = 'identicon') {
   const trimmedEmail = email.trim().toLowerCase();
-  const hash = md5(trimmedEmail).toString();
+  const hash = MD5(trimmedEmail).toString();
   
   return `https://www.gravatar.com/avatar/${hash}?s=${size}&d=${defaultType}`;
 }
