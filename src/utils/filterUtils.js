@@ -1,8 +1,9 @@
 export function filterTutorials(tutorials, filters) {
+  const query = filters.searchQuery?.toLowerCase();
+
   return tutorials.filter((tutorial) => {
     // Text search
-    if (filters.searchQuery) {
-      const query = filters.searchQuery.toLowerCase();
+    if (query) {
       const matchesTitle = tutorial.title.toLowerCase().includes(query);
       const matchesDesc = tutorial.description.toLowerCase().includes(query);
       const matchesTags = tutorial.tags.some((tag) => tag.toLowerCase().includes(query));
