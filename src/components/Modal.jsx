@@ -10,7 +10,7 @@ export default function Modal({ title, onClose, children }) {
   const closeBtnRef = useRef(null);
   const previousFocusRef = useRef(null);
   const titleId = useRef(
-    'modal-title-' + Math.random().toString(36).slice(2, 7)
+    'modal-title-' + crypto.randomUUID()
   ).current;
 
   useEffect(() => {
