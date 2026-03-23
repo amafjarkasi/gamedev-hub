@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { useTheme } from '../../contexts/ThemeContext';
+import ThemeToggle from '../ThemeToggle';
 import styles from './Header.module.css';
 
 export default function Header() {
   const { currentUser, isAuthenticated, logout } = useAuth();
+  const { theme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -39,7 +42,11 @@ export default function Header() {
         onClick={() => setMobileOpen(false)}
         title="Profile"
       >
-        {currentUser.displayName.charAt(0).toUpperCase()}
+        {currentUser.avatarUrl ? (
+          <img src={currentUser.avatarUrl} alt={currentUser.displayName} />
+        ) : (
+          currentUser.displayName.charAt(0).toUpperCase()
+        )}
       </Link>
       <span className={styles.userName}>{currentUser.displayName}</span>
       <button onClick={handleLogout} className={styles.btnLogout}>
@@ -75,10 +82,14 @@ export default function Header() {
           </span>
         </Link>
 
-        <nav className={styles.nav}>{navItems}</nav>
+        <nav className={styles.nav}>
+          <ThemeToggle />
+          {navItems}
+        </nav>
 
         {/* Desktop auth */}
         <div className={styles.authButtons} style={{ display: undefined }}>
+          <ThemeToggle />
           {authSection}
         </div>
 
@@ -95,6 +106,7 @@ export default function Header() {
       <div
         className={`${styles.mobileMenu} ${mobileOpen ? styles.mobileMenuOpen : ''}`}
       >
+        <ThemeToggle />
         {navItems}
         {authSection}
       </div>

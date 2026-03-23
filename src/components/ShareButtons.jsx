@@ -31,24 +31,36 @@ export default function ShareButtons({ title, url }) {
       <button
         className={styles.shareBtn}
         onClick={handleCopyLink}
+        aria-label="Copy link to clipboard"
       >
-        Copy Link
+        🔗 Copy
       </button>
       <a
-        className={styles.shareBtn}
+        className={`${styles.shareBtn} ${styles.twitter}`}
         href={`https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`}
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="Share on Twitter"
       >
-        Twitter
+        🐦 Twitter
       </a>
       <a
-        className={styles.shareBtn}
+        className={`${styles.shareBtn} ${styles.discord}`}
+        href={`https://discordapp.com/channels/@me?message=${encodedUrl}%0A${encodedTitle}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Share on Discord"
+      >
+        💬 Discord
+      </a>
+      <a
+        className={`${styles.shareBtn} ${styles.reddit}`}
         href={`https://reddit.com/submit?url=${encodedUrl}&title=${encodedTitle}`}
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="Share on Reddit"
       >
-        Reddit
+        🤓 Reddit
       </a>
     </div>
   );

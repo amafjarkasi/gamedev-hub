@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { reportError } from '../utils/analytics';
 import styles from './ErrorBoundary.module.css';
 
 export default class ErrorBoundary extends Component {
@@ -15,6 +16,11 @@ export default class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('ErrorBoundary caught:', error, errorInfo);
+    // Report to Sentry/analytics
+    reportError(error, {
+      component: 'ErrorBoundary',
+      ...errorInfo,
+    });
   }
 
   handleReset() {

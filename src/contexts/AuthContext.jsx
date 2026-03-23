@@ -6,6 +6,7 @@ import {
   verifyPassword,
   isLegacyHash,
 } from '../utils/cryptoUtils';
+import { getGravatarUrl } from '../utils/gravatar';
 
 export const AuthContext = createContext(null);
 
@@ -39,7 +40,7 @@ export function AuthProvider({ children }) {
         email,
         passwordHash,
         displayName: displayName || username,
-        avatarUrl: '',
+        avatarUrl: getGravatarUrl(email, 80, 'identicon'),
         createdAt: new Date().toISOString(),
       };
 

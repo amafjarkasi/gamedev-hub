@@ -2,12 +2,15 @@
   display: inline-flex;
   align-items: center;
   gap: 1px;
+  vertical-align: middle;
 }
 
 .star {
   color: var(--color-border-light);
   font-size: 14px;
   line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .starFilled {
@@ -24,6 +27,9 @@
   font-size: var(--text-xs);
   color: var(--color-text-secondary);
   font-weight: 500;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
 }
 
 .compact .star {

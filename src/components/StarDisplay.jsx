@@ -23,7 +23,7 @@ export default function StarDisplay({ rating, count, compact = false }) {
     } else {
       stars.push(
         <span key={i} className={styles.star}>
-          &#9733;
+          &#9734;
         </span>
       );
     }

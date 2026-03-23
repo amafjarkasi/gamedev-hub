@@ -30,6 +30,24 @@
   border-color: var(--color-border-light);
 }
 
+.shareBtn.twitter:hover {
+  background: #1da1f2;
+  color: white;
+  border-color: #1da1f2;
+}
+
+.shareBtn.discord:hover {
+  background: #5865f2;
+  color: white;
+  border-color: #5865f2;
+}
+
+.shareBtn.reddit:hover {
+  background: #ff4500;
+  color: white;
+  border-color: #ff4500;
+}
+
 .copied {
   background: var(--color-accent-primary-dim);
   color: var(--color-accent-primary);
