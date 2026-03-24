@@ -32,6 +32,7 @@ export function TutorialProvider({ children }) {
   const [freshnessVotes, setFreshnessVotes] = useLocalStorage('kaz_freshness_votes', {});
   // Feature 6
   const [followedTags, setFollowedTags] = useLocalStorage('kaz_followed_tags', {});
+  const [playlists, setPlaylists] = useLocalStorage('kaz_playlists', {});
 
   // Merge mock tutorials with approved submissions, overlay dynamic data
   const allTutorials = useMemo(() => {
@@ -348,6 +349,74 @@ export function TutorialProvider({ children }) {
     [followedTags, allTutorials]
   );
 
+
+  // --- Feature: Custom Playlists ---
+  const createPlaylist = useCallback((userId, name, description = '') => {
+    const newPlaylist = {
+      id: `pl-${Date.now()}`,
+      name,
+      description,
+      tutorialIds: [],
+      createdAt: new Date().toISOString()
+    };
+
+    setPlaylists(prev => {
+      const userPlaylists = prev[userId] || [];
+      return {
+        ...prev,
+        [userId]: [...userPlaylists, newPlaylist]
+      };
+    });
+    return newPlaylist;
+  }, [setPlaylists]);
+
+  const getUserPlaylists = useCallback((userId) => {
+    return playlists[userId] || [];
+  }, [playlists]);
+
+  const addTutorialToPlaylist = useCallback((userId, playlistId, tutorialId) => {
+    setPlaylists(prev => {
+      const userPlaylists = prev[userId] || [];
+      return {
+        ...prev,
+        [userId]: userPlaylists.map(pl => {
+          if (pl.id === playlistId) {
+            if (!pl.tutorialIds.includes(tutorialId)) {
+              return { ...pl, tutorialIds: [...pl.tutorialIds, tutorialId] };
+            }
+          }
+          return pl;
+        })
+      };
+    });
+  }, [setPlaylists]);
+
+  const removeTutorialFromPlaylist = useCallback((userId, playlistId, tutorialId) => {
+    setPlaylists(prev => {
+      const userPlaylists = prev[userId] || [];
+      return {
+        ...prev,
+        [userId]: userPlaylists.map(pl => {
+          if (pl.id === playlistId) {
+            return { ...pl, tutorialIds: pl.tutorialIds.filter(id => id !== tutorialId) };
+          }
+          return pl;
+        })
+      };
+    });
+  }, [setPlaylists]);
+
+  const deletePlaylist = useCallback((userId, playlistId) => {
+    setPlaylists(prev => {
+      const userPlaylists = prev[userId] || [];
+      return {
+        ...prev,
+        [userId]: userPlaylists.filter(pl => pl.id !== playlistId)
+      };
+    });
+  }, [setPlaylists]);
+
+
   // --- Standard functions ---
 
   const submitTutorial = useCallback(
@@ -487,6 +556,11 @@ export function TutorialProvider({ children }) {
       editSubmission,
       deleteSubmission,
       incrementViewCount,
+      createPlaylist,
+      getUserPlaylists,
+      addTutorialToPlaylist,
+      removeTutorialFromPlaylist,
+      deletePlaylist,
       updateFilters,
       resetFilters,
       setSortBy,
@@ -528,6 +602,11 @@ export function TutorialProvider({ children }) {
       editSubmission,
       deleteSubmission,
       incrementViewCount,
+      createPlaylist,
+      getUserPlaylists,
+      addTutorialToPlaylist,
+      removeTutorialFromPlaylist,
+      deletePlaylist,
       updateFilters,
       resetFilters,
       setSortBy,

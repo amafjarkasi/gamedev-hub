@@ -1,24 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import TutorialCard from './TutorialCard';
+import SkeletonLoader from './SkeletonLoader';
 import { tutorialShape } from '../utils/propTypeShapes';
 import EmptyState from './EmptyState';
 import styles from './TutorialGallery.module.css';
-
-function getPageNumbers(current, total) {
-  if (total <= 7) {
-    return Array.from({ length: total }, (_, i) => i + 1);
-  }
-  const pages = [1];
-  if (current > 3) pages.push('...');
-  for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) {
-    pages.push(i);
-  }
-  if (current < total - 2) pages.push('...');
-  pages.push(total);
-  return pages;
-}
 
 export default function TutorialGallery({
   tutorials,
@@ -29,22 +16,51 @@ export default function TutorialGallery({
   emptyTitle = 'No tutorials found',
   emptyMessage = 'Try adjusting your search or filters.',
   onClearFilters,
-  pageSize,
+  pageSize = 12,
 }) {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [displayedCount, setDisplayedCount] = useState(pageSize);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const observerTarget = useRef(null);
 
   useEffect(() => {
-    setCurrentPage(1);
-  }, [tutorials]);
+    // Reset displayed count when tutorials change (e.g., new search/filter)
+    setDisplayedCount(pageSize);
+  }, [tutorials, pageSize]);
 
-  const paginate = pageSize && tutorials.length > pageSize;
-  const totalPages = paginate ? Math.ceil(tutorials.length / pageSize) : 1;
-  const displayTutorials = paginate
-    ? tutorials.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-    : tutorials;
+  const loadMore = useCallback(() => {
+    if (displayedCount < tutorials.length) {
+      setIsLoadingMore(true);
+      // Simulate network delay for loading effect
+      setTimeout(() => {
+        setDisplayedCount(prev => Math.min(prev + pageSize, tutorials.length));
+        setIsLoadingMore(false);
+      }, 500);
+    }
+  }, [displayedCount, tutorials.length, pageSize]);
 
-  const startIdx = paginate ? (currentPage - 1) * pageSize + 1 : 1;
-  const endIdx = paginate ? Math.min(currentPage * pageSize, tutorials.length) : tutorials.length;
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting && displayedCount < tutorials.length && !isLoadingMore) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [loadMore, displayedCount, tutorials.length, isLoadingMore]);
+
+  const displayTutorials = tutorials.slice(0, displayedCount);
 
   return (
     <section className={styles.gallery}>
@@ -64,18 +80,28 @@ export default function TutorialGallery({
 
       {showCount && tutorials.length > 0 && (
         <p className={styles.resultCount}>
-          {paginate
-            ? `Showing ${startIdx}\u2013${endIdx} of ${tutorials.length} tutorials`
-            : `${tutorials.length} tutorial${tutorials.length !== 1 ? 's' : ''} found`}
+          {tutorials.length} tutorial{tutorials.length !== 1 ? 's' : ''} found
         </p>
       )}
 
       {displayTutorials.length > 0 ? (
-        <div className={styles.grid}>
-          {displayTutorials.map((tutorial) => (
-            <TutorialCard key={tutorial.id} tutorial={tutorial} />
-          ))}
-        </div>
+        <>
+          <div className={styles.grid}>
+            {displayTutorials.map((tutorial) => (
+              <TutorialCard key={tutorial.id} tutorial={tutorial} />
+            ))}
+            {isLoadingMore && (
+              <>
+                <SkeletonLoader type="card" count={3} />
+              </>
+            )}
+          </div>
+          {displayedCount < tutorials.length && (
+            <div ref={observerTarget} className={styles.loadingTrigger}>
+              {/* Invisible trigger for intersection observer */}
+            </div>
+          )}
+        </>
       ) : (
         <EmptyState
           title={emptyTitle}
@@ -83,42 +109,6 @@ export default function TutorialGallery({
           actionLabel={onClearFilters ? 'Clear Filters' : undefined}
           onAction={onClearFilters}
         />
-      )}
-
-      {paginate && totalPages > 1 && (
-        <div className={styles.pagination}>
-          <button
-            className={styles.pageBtn}
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage((p) => p - 1)}
-          >
-            Prev
-          </button>
-          {getPageNumbers(currentPage, totalPages).map((page, i) =>
-            page === '...' ? (
-              <span key={`ellipsis-${i}`} className={styles.ellipsis}>
-                &hellip;
-              </span>
-            ) : (
-              <button
-                key={page}
-                className={`${styles.pageBtn} ${
-                  page === currentPage ? styles.pageBtnActive : ''
-                }`}
-                onClick={() => setCurrentPage(page)}
-              >
-                {page}
-              </button>
-            )
-          )}
-          <button
-            className={styles.pageBtn}
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage((p) => p + 1)}
-          >
-            Next
-          </button>
-        </div>
       )}
     </section>
   );

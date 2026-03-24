@@ -12,6 +12,7 @@ import DifficultyBadge from '../components/DifficultyBadge';
 import StarDisplay from '../components/StarDisplay';
 import RatingWidget from '../components/RatingWidget';
 import ReviewSection from '../components/ReviewSection';
+import AddToPlaylistModal from '../components/AddToPlaylistModal';
 import ShareButtons from '../components/ShareButtons';
 import FreshnessBadge from '../components/FreshnessBadge';
 import FreshnessVoter from '../components/FreshnessVoter';
@@ -234,6 +235,14 @@ export default function TutorialDetailPage() {
         </div>
 
         <div className={styles.actionsRow}>
+
+          <button
+            className={styles.actionBtn}
+            onClick={() => { if (!isAuthenticated) { navigate('/login'); return; } setIsPlaylistModalOpen(true); }}
+            title="Save to Playlist"
+          >
+            <span className={styles.actionIcon}>&#9776;</span> Save
+          </button>
           <button
             className={`${styles.completedBtn} ${completed ? styles.completedActive : ''}`}
             onClick={handleCompleted}
