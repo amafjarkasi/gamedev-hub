@@ -1,4 +1,3 @@
-import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTutorials } from '../hooks/useTutorials';
 import { CATEGORIES } from '../data/constants';

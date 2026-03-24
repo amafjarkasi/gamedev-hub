@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { useToast } from '../hooks/useToast';
 import styles from './ShareButtons.module.css';

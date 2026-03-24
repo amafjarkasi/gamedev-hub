@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { SORT_OPTIONS } from '../data/constants';
 import styles from './SortDropdown.module.css';
