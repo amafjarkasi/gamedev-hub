@@ -278,16 +278,21 @@ export function TutorialProvider({ children }) {
   const getFreshnessStatus = useCallback(
     (tutorialId) => {
       const votes = freshnessVotes[tutorialId] || [];
-      const worksCount = votes.filter((v) => v.type === 'works').length;
-      const outdatedCount = votes.filter((v) => v.type === 'outdated').length;
+      let worksCount = 0;
+      let outdatedCount = 0;
+      for (let i = 0; i < votes.length; i++) {
+        const vote = votes[i];
+        if (vote.type === 'works') worksCount++;
+        else if (vote.type === 'outdated') outdatedCount++;
+      }
       let consensus = 'unknown';
       if (worksCount + outdatedCount >= 3) {
         if (outdatedCount > worksCount) consensus = 'outdated';
         else consensus = 'works';
       } else if (worksCount > 0 && outdatedCount === 0) {
-         consensus = 'works';
+        consensus = 'works';
       } else if (outdatedCount > 0 && worksCount === 0) {
-         consensus = 'outdated';
+        consensus = 'outdated';
       }
       return { worksCount, outdatedCount, consensus };
     },
