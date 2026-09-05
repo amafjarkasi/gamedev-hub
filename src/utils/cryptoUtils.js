@@ -64,6 +64,3 @@ export async function verifyPassword(password, storedHash) {
   return diff === 0;
 }
 
-export function isLegacyHash(hash) {
-  return !hash.startsWith('pbkdf2:');
-}

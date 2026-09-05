@@ -4,7 +4,6 @@ import {
   generateSalt,
   hashPassword,
   verifyPassword,
-  isLegacyHash,
 } from '../utils/cryptoUtils';
 import { getGravatarUrl } from '../utils/gravatar';
 
@@ -60,29 +59,15 @@ export function AuthProvider({ children }) {
         return { success: false, error: 'User not found' };
       }
 
-      if (isLegacyHash(user.passwordHash)) {
-        // Legacy btoa comparison + silent migration
-        if (user.passwordHash !== btoa(password)) {
-          return { success: false, error: 'Incorrect password' };
-        }
-        // Migrate to PBKDF2
-        const salt = generateSalt();
-        const newHash = await hashPassword(password, salt);
-        const updatedUsers = users.map((u) =>
-          u.id === user.id ? { ...u, passwordHash: newHash } : u
-        );
-        setUsers(updatedUsers);
-      } else {
-        const valid = await verifyPassword(password, user.passwordHash);
-        if (!valid) {
-          return { success: false, error: 'Incorrect password' };
-        }
+      const valid = await verifyPassword(password, user.passwordHash);
+      if (!valid) {
+        return { success: false, error: 'Incorrect password' };
       }
 
       setSession({ userId: user.id, loginAt: new Date().toISOString() });
       return { success: true, user };
     },
-    [users, setUsers, setSession]
+    [users, setSession]
   );
 
   const logout = useCallback(() => {
